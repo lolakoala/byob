@@ -40,7 +40,7 @@ exports.up = function(knex, Promise) {
       table.foreign('houseId').references('houses.id');
       table.timestamps(true, true);
     })
-  ])
+  ]);
 };
 
 exports.down = function(knex, Promise) {
