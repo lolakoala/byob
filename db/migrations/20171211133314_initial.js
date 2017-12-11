@@ -3,11 +3,25 @@ exports.up = function(knex, Promise) {
   return Promise.all([
     knex.schema.createTable('houses', function(table) {
       table.increments('id').primary();
-      table.string('Name');
+      table.string('name');
       table.string('secretKey');
       table.timestamps(true, true);
     }),
-    knex.schema.createTable
+    knex.schema.createTable('users', function(table) {
+      table.increments('id').primary();
+      table.string('name');
+      table.integer('houseId').unsigned();
+      table.foreign('houseId').references('houses.id');
+      table.timestamps(true, true);
+    }),
+    knex.schema.createTable('bills', function(table) {
+      table.increments('id').primary();
+      table.string('Name');
+      table.string('')
+      table.integer('houseId').unsigned();
+      table.foreign('houseId').references('houses.id');
+      table.timestamps(true, true);
+    })
   ])
 };
 
