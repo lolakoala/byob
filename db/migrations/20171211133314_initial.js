@@ -16,8 +16,9 @@ exports.up = function(knex, Promise) {
     }),
     knex.schema.createTable('bills', function(table) {
       table.increments('id').primary();
-      table.string('Name');
-      table.string('')
+      table.string('name');
+      table.string('total');
+      table.string('dueDate');
       table.integer('houseId').unsigned();
       table.foreign('houseId').references('houses.id');
       table.timestamps(true, true);
