@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const environment = process.env.NODE_ENV || 'development';
 const configuration = require('./knexfile')[environment];
 const database = require('knex')(configuration);
+const checkParams = require('./checkParams');
 
 const requireHTTPS = (request, response, next) => {
   if (request.header('x-forwarded-proto') !== 'https') {
@@ -112,6 +113,12 @@ app.get('/api/v1/houses/:houseId/bulletins', (request, response) => {
       return response.status(500).json({ error });
     });
 });
+
+app.post('/api/v1/houses', (request, response) => {
+  const house = request.body;
+
+  checkParams(['name'], project, response);
+})
 
 app.delete('/api/v1/houses/:houseId/bills/:id', (request, response) => {
   database('bills').where('id', request.params.id).select()
