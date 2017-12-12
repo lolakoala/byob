@@ -117,13 +117,13 @@ app.get('/api/v1/houses/:houseId/bulletins', (request, response) => {
 app.post('/api/v1/houses', (request, response) => {
   const house = request.body;
 
-  checkParams(['name'], house, response);
+  checkParams(['name', 'secretKey'], house, response);
 
-  database('houses').where('name', house.name).select()
+  database('houses').where('secretKey', house.secretKey).select()
     .then(houses => {
       if (houses.length) {
         return response.status(422).json({
-          error: 'A house with that name already exists.'
+          error: 'A house with that secret key already exists.'
         });
       }
     })
@@ -131,6 +131,33 @@ app.post('/api/v1/houses', (request, response) => {
       database('houses').insert(house, 'id')
         .then(house => {
           return response.status(201).json({ id: house[0] });
+        })
+        .catch(error => {
+          return response.status(500).json({ error });
+        });
+    })
+    .catch(error => {
+      return response.status(500).json({ error });
+    });
+});
+
+app.post('/api/v1/houses', (request, response) => {
+  const user = request.body;
+
+  checkParams(['name', 'houseId'], user, response);
+
+  database('users').where('name', user.name).select()
+    .then(users => {
+      if (users.length && users.find(aUser => aUser.houseId === user.houseId)) {
+        return response.status(422).json({
+          error: 'A user with that name already exists in the house specified.'
+        });
+      }
+    })
+    .then(() => {
+      database('users').insert(user, 'id')
+        .then(user => {
+          return response.status(201).json({ id: user[0] });
         })
         .catch(error => {
           return response.status(500).json({ error });
