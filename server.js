@@ -141,7 +141,7 @@ app.post('/api/v1/houses', (request, response) => {
     });
 });
 
-app.post('/api/v1/houses', (request, response) => {
+app.post('/api/v1/users', (request, response) => {
   const user = request.body;
 
   checkParams(['name', 'houseId'], user, response);
@@ -166,6 +166,48 @@ app.post('/api/v1/houses', (request, response) => {
     .catch(error => {
       return response.status(500).json({ error });
     });
+});
+
+app.post('/api/v1/houses/:houseId/bills', (request, response) => {
+  const bill = request.body;
+
+  checkParams(['name', 'total', 'dueDate', 'houseId'], bill, response);
+
+  database('bills').insert(bill, 'id')
+    .then(bill => {
+      return response.status(201).json({ id: bill[0] });
+    })
+    .catch(error => {
+      return response.status(500).json({ error });
+    })
+});
+
+app.post('/api/v1/houses/:houseId/chores', (request, response) => {
+  const chore = request.body;
+
+  checkParams(['name', 'details', 'userId', 'houseId'], chore, response);
+
+  database('chores').insert(chore, 'id')
+    .then(chore => {
+      return response.status(201).json({ id: chore[0] });
+    })
+    .catch(error => {
+      return response.status(500).json({ error });
+    })
+});
+
+app.post('/api/v1/houses/:houseId/bulletins', (request, response) => {
+  const bulletin = request.body;
+
+  checkParams(['title', 'body', 'houseId'], bulletin, response);
+
+  database('bulletins').insert(bulletin, 'id')
+    .then(bulletin => {
+      return response.status(201).json({ id: bulletin[0] });
+    })
+    .catch(error => {
+      return response.status(500).json({ error });
+    })
 });
 
 app.delete('/api/v1/houses/:houseId/bills/:id', (request, response) => {
