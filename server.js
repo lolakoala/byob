@@ -176,20 +176,20 @@ app.post('/api/v1/houses/:houseId/bills', (request, response) => {
 
   database('houses').where('id', houseId).select()
     .then(house => {
-      if (house) {
+      if (!house) {
         response.status(422).json({
           error: 'There is no house with id specified.'
-        })
+        });
       }
     })
     .then(() => {
       database('bills').insert(bill, 'id')
-      .then(bill => {
-        return response.status(201).json({ id: bill[0] });
-      })
-      .catch(error => {
-        return response.status(500).json({ error });
-      });
+        .then(bill => {
+          return response.status(201).json({ id: bill[0] });
+        })
+        .catch(error => {
+          return response.status(500).json({ error });
+        });
     })
     .catch(error => {
       return response.status(500).json({ error });
@@ -204,20 +204,20 @@ app.post('/api/v1/houses/:houseId/chores', (request, response) => {
 
   database('houses').where('id', houseId).select()
     .then(house => {
-      if (house) {
+      if (!house) {
         response.status(422).json({
           error: 'There is no house with id specified.'
-        })
+        });
       }
     })
     .then(() => {
       database('chores').insert(chore, 'id')
-      .then(chore => {
-        return response.status(201).json({ id: chore[0] });
-      })
-      .catch(error => {
-        return response.status(500).json({ error });
-      });
+        .then(chore => {
+          return response.status(201).json({ id: chore[0] });
+        })
+        .catch(error => {
+          return response.status(500).json({ error });
+        });
     })
     .catch(error => {
       return response.status(500).json({ error });
@@ -232,20 +232,20 @@ app.post('/api/v1/houses/:houseId/bulletins', (request, response) => {
 
   database('houses').where('id', houseId).select()
     .then(house => {
-      if (house) {
+      if (!house) {
         response.status(422).json({
           error: 'There is no house with id specified.'
-        })
+        });
       }
     })
     .then(() => {
       database('bulletins').insert(bulletin, 'id')
-      .then(bulletin => {
-        return response.status(201).json({ id: bulletin[0] });
-      })
-      .catch(error => {
-        return response.status(500).json({ error });
-      });
+        .then(bulletin => {
+          return response.status(201).json({ id: bulletin[0] });
+        })
+        .catch(error => {
+          return response.status(500).json({ error });
+        });
     })
     .catch(error => {
       return response.status(500).json({ error });
@@ -258,9 +258,20 @@ app.patch('/api/v1/houses/:id', (request, response) => {
 
   if (updatedHouse.id) {
     return response.status(422).json({
-      error:
-    })
+      error: 'You cannot change a house id.'
+    });
   }
+
+  database('houses').where('id', id).update(updatedHouse, '*')
+    .then(results => {
+      if (!results.length) {
+        return response.status(404).json({ error: `Cannot find a house with the id of ${id}` });
+      }
+      return response.sendStatus(204);
+    })
+    .catch(error => {
+      response.status(500).json({ error });
+    });
 });
 
 app.delete('/api/v1/houses/:houseId/bills/:id', (request, response) => {
