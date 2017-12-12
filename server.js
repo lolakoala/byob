@@ -274,6 +274,28 @@ app.patch('/api/v1/houses/:id', (request, response) => {
     });
 });
 
+app.patch('/api/v1/users/:id', (request, response) => {
+  const { id } = request.params;
+  const updatedUser = request.body;
+
+  if (updatedUser.id) {
+    return response.status(422).json({
+      error: 'You cannot change a user id.'
+    });
+  }
+
+  database('users').where('id', id).update(updatedUser, '*')
+    .then(results => {
+      if (!results.length) {
+        return response.status(404).json({ error: `Cannot find a user with the id of ${id}` });
+      }
+      return response.sendStatus(204);
+    })
+    .catch(error => {
+      response.status(500).json({ error });
+    });
+});
+
 app.delete('/api/v1/houses/:houseId/bills/:id', (request, response) => {
   database('bills').where('id', request.params.id).select()
     .then(bills => {
