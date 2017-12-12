@@ -174,13 +174,26 @@ app.post('/api/v1/houses/:houseId/bills', (request, response) => {
 
   checkParams(['name', 'total', 'dueDate', 'houseId'], bill, response);
 
-  database('bills').insert(bill, 'id')
-    .then(bill => {
-      return response.status(201).json({ id: bill[0] });
+  database('houses').where('id', houseId).select()
+    .then(house => {
+      if (house) {
+        response.status(422).json({
+          error: 'There is no house with id specified.'
+        })
+      }
+    })
+    .then(() => {
+      database('bills').insert(bill, 'id')
+      .then(bill => {
+        return response.status(201).json({ id: bill[0] });
+      })
+      .catch(error => {
+        return response.status(500).json({ error });
+      });
     })
     .catch(error => {
       return response.status(500).json({ error });
-    })
+    });
 });
 
 app.post('/api/v1/houses/:houseId/chores', (request, response) => {
@@ -189,13 +202,26 @@ app.post('/api/v1/houses/:houseId/chores', (request, response) => {
 
   checkParams(['name', 'details', 'userId', 'houseId'], chore, response);
 
-  database('chores').insert(chore, 'id')
-    .then(chore => {
-      return response.status(201).json({ id: chore[0] });
+  database('houses').where('id', houseId).select()
+    .then(house => {
+      if (house) {
+        response.status(422).json({
+          error: 'There is no house with id specified.'
+        })
+      }
+    })
+    .then(() => {
+      database('chores').insert(chore, 'id')
+      .then(chore => {
+        return response.status(201).json({ id: chore[0] });
+      })
+      .catch(error => {
+        return response.status(500).json({ error });
+      });
     })
     .catch(error => {
       return response.status(500).json({ error });
-    })
+    });
 });
 
 app.post('/api/v1/houses/:houseId/bulletins', (request, response) => {
