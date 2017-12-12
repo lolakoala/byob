@@ -169,7 +169,8 @@ app.post('/api/v1/users', (request, response) => {
 });
 
 app.post('/api/v1/houses/:houseId/bills', (request, response) => {
-  const bill = request.body;
+  const { houseId } = request.params;
+  const bill = Object.assign({ houseId }, request.body);
 
   checkParams(['name', 'total', 'dueDate', 'houseId'], bill, response);
 
@@ -183,7 +184,8 @@ app.post('/api/v1/houses/:houseId/bills', (request, response) => {
 });
 
 app.post('/api/v1/houses/:houseId/chores', (request, response) => {
-  const chore = request.body;
+  const { houseId } = request.params;
+  const chore = Object.assign({ houseId }, request.body);
 
   checkParams(['name', 'details', 'userId', 'houseId'], chore, response);
 
@@ -197,7 +199,8 @@ app.post('/api/v1/houses/:houseId/chores', (request, response) => {
 });
 
 app.post('/api/v1/houses/:houseId/bulletins', (request, response) => {
-  const bulletin = request.body;
+  const { houseId } = request.params;
+  const bulletin = Object.assign({ houseId }, request.body);
 
   checkParams(['title', 'body', 'houseId'], bulletin, response);
 
