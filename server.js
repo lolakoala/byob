@@ -28,68 +28,101 @@ app.get('/api/v1/houses', (request, response) => {
     .then(houses => {
       return response.status(200).json(houses);
     })
-    .catch( error => {
+    .catch(error => {
       return response.status(500).json({ error });
     });
 });
 
+app.get('/api/v1/users', (request, response) => {
+  database('users').select()
+    .then(users => {
+      return response.status(200).json(users);
+    })
+    .catch(error => {
+      return response.status(500).json({ error });
+    });
+});
 
-app.get('/api/v1/houses/:id/bills', (request, response) => {
-  database('bills').select()
+app.get('/api/v1/houses/:id/users', (request, response) => {
+  database('users').where('houseId', request.params.id).select()
+    .then(users => {
+      if (users.length) {
+        return response.status(200).json(users);
+      } else {
+        return response.status(404).json({ error: `No saved users for house ${request.params.id}`});
+      }
+    })
+    .catch(error => {
+      return response.status(500).json({ error });
+    });
+});
+
+app.get('/api/v1/houses/:houseId/bills', (request, response) => {
+  database('bills').where('houseId', request.params.houseId).select()
     .then(bills => {
-      return response.status(200).json(bills);
+      if (bills.length) {
+        return response.status(200).json(bills);
+      } else {
+        return response.status(404).json({ error: `No saved bills for house ${request.params.houseId}`});
+      }
     })
-    .catch( error => {
+    .catch(error => {
       return response.status(500).json({ error });
     });
 });
 
-app.get('/api/v1/houses/:id/chores', (request, response) => {
-  database('chores').select()
+app.get('/api/v1/houses/:houseId/chores', (request, response) => {
+  database('chores').where('houseId', request.params.houseId).select()
     .then(chores => {
-      return response.status(200).json(chores);
+      if (chores.length) {
+        return response.status(200).json(chores);
+      } else {
+        return response.status(404).json({ error: `No saved chores for house ${request.params.houseId}`});
+      }
     })
-    .catch( error => {
+    .catch(error => {
       return response.status(500).json({ error });
     });
 });
 
-app.get('/api/v1/houses/:id/bulletins', (request, response) => {
-  database('bulletins').select()
+app.get('/api/v1/houses/:houseId/bulletins', (request, response) => {
+  database('bulletins').where('houseId', request.params.houseId).select()
     .then(bulletins => {
-      return response.status(200).json(bulletins);
+      if (bulletins.length) {
+        return response.status(200).json(bulletins);
+      } else {
+        return response.status(404).json({ error: `No saved chores for house ${request.params.houseId}`});
+      }
     })
-    .catch( error => {
+    .catch(error => {
       return response.status(500).json({ error });
     });
 });
 
-app.delete('/api/v1/houses/:id/bills/:id', (request, response) => {
-  const { id } = request.params;
-  database('bills').where('id', id).select()
+app.delete('/api/v1/houses/:houseId/bills/:id', (request, response) => {
+  database('bills').where('id', request.params.id).select()
     .then(bills => {
       if (!bills.length) {
         return response.status(422).json({
           error: `Could not find a bill with an id of ${id}.`
         });
       }
-      databse('bills').where('id', id).del()
+      databse('bills').where('id', request.params.id).del()
         .then(() => {
           return response.status(500).json({ error });
         });
     });
 });
 
-app.delete('/api/v1/houses/:id/chores/:id', (request, response) => {
-  const { id } = request.params;
-  database('chores').where('id', id).select()
+app.delete('/api/v1/houses/:houseId/chores/:id', (request, response) => {
+  database('chores').where('id', request.params.id).select()
     .then(chores => {
       if (!chores.length) {
         return response.status(422).json({
           error: `Could not find a bill with an id of ${id}.`
         });
       }
-      databse('chores').where('id', id).del()
+      databse('chores').where('id', request.params.id).del()
         .then(() => {
           return response.status(500).json({ error });
         });
@@ -111,9 +144,6 @@ app.delete('/api/v1/houses/:id/bulletins/:id', (request, response) => {
         });
     });
 });
-
-
-
 
 app.listen(app.get('port'), () => {
   console.log(`${app.locals.title} is running on ${app.get('port')}.`);
