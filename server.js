@@ -204,13 +204,37 @@ app.post('/api/v1/houses/:houseId/bulletins', (request, response) => {
 
   checkParams(['title', 'body', 'houseId'], bulletin, response);
 
-  database('bulletins').insert(bulletin, 'id')
-    .then(bulletin => {
-      return response.status(201).json({ id: bulletin[0] });
+  database('houses').where('id', houseId).select()
+    .then(house => {
+      if (house) {
+        response.status(422).json({
+          error: 'There is no house with id specified.'
+        })
+      }
+    })
+    .then(() => {
+      database('bulletins').insert(bulletin, 'id')
+      .then(bulletin => {
+        return response.status(201).json({ id: bulletin[0] });
+      })
+      .catch(error => {
+        return response.status(500).json({ error });
+      });
     })
     .catch(error => {
       return response.status(500).json({ error });
+    });
+});
+
+app.patch('/api/v1/houses/:id', (request, response) => {
+  const { id } = request.params;
+  const updatedHouse = request.body;
+
+  if (updatedHouse.id) {
+    return response.status(422).json({
+      error:
     })
+  }
 });
 
 app.delete('/api/v1/houses/:houseId/bills/:id', (request, response) => {
