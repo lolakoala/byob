@@ -117,8 +117,29 @@ app.get('/api/v1/houses/:houseId/bulletins', (request, response) => {
 app.post('/api/v1/houses', (request, response) => {
   const house = request.body;
 
-  checkParams(['name'], project, response);
-})
+  checkParams(['name'], house, response);
+
+  database('houses').where('name', house.name).select()
+    .then(houses => {
+      if (houses.length) {
+        return response.status(422).json({
+          error: 'A house with that name already exists.'
+        });
+      }
+    })
+    .then(() => {
+      database('houses').insert(house, 'id')
+        .then(house => {
+          return response.status(201).json({ id: house[0] });
+        })
+        .catch(error => {
+          return response.status(500).json({ error });
+        });
+    })
+    .catch(error => {
+      return response.status(500).json({ error });
+    });
+});
 
 app.delete('/api/v1/houses/:houseId/bills/:id', (request, response) => {
   database('bills').where('id', request.params.id).select()
