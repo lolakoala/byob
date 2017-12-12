@@ -320,3 +320,5 @@ exports.seeds = function (knex, Promise) {
     })
     .catch(error => console.log({ error }));
 };
+
+
