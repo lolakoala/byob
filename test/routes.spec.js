@@ -78,11 +78,28 @@ describe('API Routes', (done) => {
   // describe('GET /api/v1/houses/:houseId/bulletins', () => {
   //
   // });
-  //
-  // describe('POST /api/v1/houses', () => {
-  //
-  // });
-  //
+  
+  describe('POST /api/v1/houses', () => {
+
+    it('should be able to add a house to the database', () => {
+      return chai.request(server)
+        .post('/api/v1/houses')
+        .send({
+          name: 'The BIG House',
+          secretKey: 'password'
+        })
+        .then(response => {
+          response.should.have.status(201);
+          response.body.should.be.a('object');
+          response.body.should.have.property('id');
+        })
+        .catch(error => {
+          throw error;
+        });
+    });
+
+  });
+  
   // describe('POST /api/v1/houses/:houseId/users', () => {
   //
   // });
