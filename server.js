@@ -4,11 +4,10 @@ const bodyParser = require('body-parser');
 const environment = process.env.NODE_ENV || 'development';
 const configuration = require('./knexfile')[environment];
 const database = require('knex')(configuration);
-const checkParams = require('./checkParams');
+const checkParams = require('./checkParams.js');
 
 const requireHTTPS = (request, response, next) => {
   if (request.header('x-forwarded-proto') !== 'https') {
-    //had to add a second '=' above because of linter
     return response.redirect(`https://${request.header('host')}${request.url}`);
   }
   next();
@@ -49,7 +48,7 @@ app.get('/api/v1/users/:id', (request, response) => {
     .then(user => {
       if (user.length) {
         return response.status(200).json(user);
-      }else {
+      } else {
         return response.status(404).json({ error: `No user for id ${request.params.id}`});
       }
     })
@@ -141,31 +140,46 @@ app.post('/api/v1/houses', (request, response) => {
     });
 });
 
-app.post('/api/v1/users', (request, response) => {
-  const user = request.body;
+app.post('/api/v1/houses/:houseId/users', (request, response) => {
+  const { houseId } = request.params;
+  const user = Object.assign({ houseId }, request.body);
 
   checkParams(['name', 'houseId'], user, response);
 
-  database('users').where('name', user.name).select()
-    .then(users => {
-      if (users.length && users.find(aUser => aUser.houseId === user.houseId)) {
-        return response.status(422).json({
-          error: 'A user with that name already exists in the house specified.'
+  database('houses').where('id', houseId).select()
+    .then(house => {
+      if (!house) {
+        response.status(422).json({
+          error: 'There is no house with id specified.'
         });
       }
     })
-    .then(() => {
-      database('users').insert(user, 'id')
-        .then(user => {
-          return response.status(201).json({ id: user[0] });
+    .then(
+      database('users').where('name', user.name).where('houseId', houseId).select()
+        .then(users => {
+          if (users.length) {
+            return response.status(422).json({
+              error: 'A user with that name already exists in the house specified.'
+            });
+          }
+        })
+        .then(() => {
+          database('users').insert(user, 'id')
+            .then(user => {
+              return response.status(201).json({ id: user[0] });
+            })
+            .catch(error => {
+              return response.status(500).json({ error });
+            });
         })
         .catch(error => {
           return response.status(500).json({ error });
-        });
-    })
+        })
+    )
     .catch(error => {
       return response.status(500).json({ error });
     });
+
 });
 
 app.post('/api/v1/houses/:houseId/bills', (request, response) => {
