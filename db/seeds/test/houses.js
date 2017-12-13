@@ -1,10 +1,12 @@
-exports.seeds = function (knex, Promise) {
+
+exports.seed = function(knex, Promise) {
+  // Deletes ALL existing entries
   return knex('bulletins').del()
-    .then(() => knex('chores')).del()
-    .then(() => knex('bills')).del()
-    .then(() => knex('users')).del()
-    .then(() => knex('houses')).del()
-    .then(() => {
+    .then( () => knex('chores').del() )
+    .then( () => knex('bills').del() )
+    .then( () => knex('users').del() )
+    .then( () => knex('houses').del() )
+    .then( () => {
       return Promise.all([
         knex('houses').insert([
           { name: 'test-DogHouse', secretKey: 'oiuhasrfou'},
@@ -314,9 +316,9 @@ exports.seeds = function (knex, Promise) {
               }
             ]);
           })
-          .then(() => console.log('Test Seeding Complete!'))
+          .then(() => console.log('Dev Seeding Complete!'))
           .catch(error => console.log({ error }))
-      ]);
+      ]);//closes Promise.all//
     })
     .catch(error => console.log({ error }));
 };
