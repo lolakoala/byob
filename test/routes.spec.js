@@ -189,9 +189,39 @@ describe('API Routes', (done) => {
     });
   });
 
-  // describe('GET /api/v1/houses/:houseId/chores', () => {
-  //
-  // });
+  describe('GET /api/v1/houses/:houseId/chores', () => {
+    it('should return all chores for a house', () => {
+      return chai.request(server)
+        .get('/api/v1/houses/1/chores')
+        .then(response => {
+          response.should.have.status(200);
+          response.should.be.json;
+          response.body.should.be.a('array');
+          response.body.length.should.equal(4);
+          response.body[0].should.have.property('id');
+          response.body[0].should.have.property('name');
+          response.body[0].name.should.equal('test-sweep the front deck');
+          response.body[0].should.have.property('details');
+          response.body[0].details.should.equal('test-get this done today!');
+          response.body[0].should.have.property('userId');
+          response.body[0].should.have.property('houseId');
+        })
+        .catch(error => { throw error; });
+    });
+
+    it('should return 404 if house has no chores', () => {
+      return chai.request(server)
+        .get('/api/v1/houses/10987/chores')
+        .then(response => {
+          response.should.have.status(404);
+          response.should.be.json;
+          response.body.should.be.a('object');
+          response.body.should.have.property('error');
+          response.body.error.should.equal(`No saved chores for house 10987`);
+        })
+        .catch(error => { throw error; });
+    });
+  });
   //
   // describe('GET /api/v1/houses/:houseId/bulletins', () => {
   //
