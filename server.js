@@ -72,8 +72,18 @@ app.get('/api/v1/houses/:id/users', (request, response) => {
 });
 
 app.get('/api/v1/houses/:houseId/bills', (request, response) => {
+  const billName = request.param('name');
+
   database('bills').where('houseId', request.params.houseId).select()
     .then(bills => {
+      if (bills.length && billName) {
+        const matchingBills = bills.filter(bill => bill.name.toLowerCase() === billName.toLowerCase());
+        if (matchingBills.length) {
+          return response.status(200).json(matchingBills);
+        } else {
+          return response.status(404).json({ error: `No bills have the name ${billName}.`});
+        }
+      }
       if (bills.length) {
         return response.status(200).json(bills);
       } else {
