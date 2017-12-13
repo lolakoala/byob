@@ -222,10 +222,40 @@ describe('API Routes', (done) => {
         .catch(error => { throw error; });
     });
   });
-  //
-  // describe('GET /api/v1/houses/:houseId/bulletins', () => {
-  //
-  // });
+
+  describe('GET /api/v1/houses/:houseId/bulletins', () => {
+    it('should return all bulletins for a house', () => {
+      return chai.request(server)
+        .get('/api/v1/houses/1/bulletins')
+        .then(response => {
+          response.should.have.status(200);
+          response.should.be.json;
+          response.body.should.be.a('array');
+          response.body.length.should.equal(1);
+          response.body[0].should.have.property('id');
+          response.body[0].should.have.property('title');
+          response.body[0].title.should.equal('test-May Bulletin');
+          response.body[0].should.have.property('body');
+          response.body[0].body.should.equal('test-May May May');
+          response.body[0].should.have.property('houseId');
+        })
+        .catch(error => { throw error; });
+    });
+
+    it('should return 404 if house has no bulletins', () => {
+      return chai.request(server)
+        .get('/api/v1/houses/10987/bulletins')
+        .then(response => {
+          response.should.have.status(404);
+          response.should.be.json;
+          response.body.should.be.a('object');
+          response.body.should.have.property('error');
+          response.body.error.should.equal(`No saved bulletins for house 10987`);
+        })
+        .catch(error => { throw error; });
+    });
+
+  });
   //
   // describe('POST /api/v1/houses', () => {
   //

@@ -115,7 +115,7 @@ app.get('/api/v1/houses/:houseId/bulletins', (request, response) => {
       if (bulletins.length) {
         return response.status(200).json(bulletins);
       } else {
-        return response.status(404).json({ error: `No saved chores for house ${request.params.houseId}`});
+        return response.status(404).json({ error: `No saved bulletins for house ${request.params.houseId}`});
       }
     })
     .catch(error => {
