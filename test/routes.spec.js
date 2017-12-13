@@ -43,6 +43,13 @@ describe('API Routes', (done) => {
         .get('/api/v1/houses')
         .then(response => {
           response.should.have.status(200);
+          // response.should.be.json;
+          // response.body.should.be.a('array');
+          // response.body.length.should.equal(8);
+          // response.body[0].should.have.property('name');
+          // response.body[0].name.should.equal('test-DogHouse');
+          // response.body[0].should.have.property('secretKey');
+          // response.body[0].secretKey.should.equal('oiuhasrfou');
         })
         .catch(error => { throw error; });
     });
