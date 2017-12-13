@@ -21,51 +21,77 @@ describe('API Routes', (done) => {
       .catch(error => { throw error; });
   });
 
-  // describe('GET /api/v1/projects', () => {
-  //   it('should return all of the projects', () => {
-  //     return chai.request(server)
-  //       .get('/api/v1/projects')
-  //       .then(response => {
-  //         response.should.have.status(200);
-  //         response.should.be.json;
-  //         response.body.should.be.a('array');
-  //         response.body.length.should.equal(3);
-  //         response.body[0].should.have.property('title');
-  //         response.body[0].title.should.equal('seasons');
-  //       })
-  //       .catch(error => { throw error; });
-  //   });
-  // });
-
   describe('GET /api/v1/houses', () => {
     it('should return all houses', () => {
       return chai.request(server)
         .get('/api/v1/houses')
         .then(response => {
           response.should.have.status(200);
-          // response.should.be.json;
-          // response.body.should.be.a('array');
-          // response.body.length.should.equal(8);
-          // response.body[0].should.have.property('name');
-          // response.body[0].name.should.equal('test-DogHouse');
-          // response.body[0].should.have.property('secretKey');
-          // response.body[0].secretKey.should.equal('oiuhasrfou');
+          response.should.be.json;
+          response.body.should.be.a('array');
+          response.body.length.should.equal(8);
+          response.body[0].should.have.property('name');
+          response.body[0].should.have.property('id');
+          response.body[0].name.should.equal('test-DogHouse');
+          response.body[0].should.have.property('secretKey');
+          response.body[0].secretKey.should.equal('oiuhasrfou');
         })
         .catch(error => { throw error; });
     });
   });
 
-  // describe('GET /api/v1/users', () => {
-  //
-  // });
-  //
-  // describe('GET /api/v1/users/:id', () => {
-  //
-  // });
-  //
-  // describe('GET /api/v1/houses/:id/users', () => {
-  //
-  // });
+  describe('GET /api/v1/users', () => {
+    it('should return all users', () => {
+      return chai.request(server)
+        .get('/api/v1/users')
+        .then(response => {
+          response.should.have.status(200);
+          response.should.be.json;
+          response.body.should.be.a('array');
+          response.body.length.should.equal(34);
+          response.body[0].should.have.property('name');
+          response.body[0].name.should.equal('test-Lola');
+          response.body[0].should.have.property('id');
+          response.body[0].should.have.property('houseId');
+        })
+        .catch(error => { throw error; });
+    });
+  });
+
+  describe('GET /api/v1/users/:id', () => {
+    it('should return user id user exists', () => {
+      return chai.request(server)
+        .get('/api/v1/users/23')
+        .then(response => {
+          response.should.have.status(200);
+          response.should.be.json;
+          response.body.should.be.a('array');
+          response.body.length.should.equal(1);
+          response.body[0].should.have.property('name');
+          response.body[0].name.should.equal('test-Julie');
+          response.body[0].should.have.property('id');
+          response.body[0].should.have.property('houseId');
+        })
+        .catch(error => { throw error; });
+    });
+
+    it('should return 404 if user does not exist', () => {
+      return chai.request(server)
+        .get('/api/v1/users/30098')
+        .then(response => {
+          response.should.have.status(404);
+          response.should.be.json;
+          response.body.should.be.a('object');
+          response.body.should.have.property('error');
+          response.body.error.should.equal(`No user for id 30098`);
+        })
+        .catch(error => { throw error; });
+    });
+  });
+
+  describe('GET /api/v1/houses/:id/users', () => {
+    it('s')
+  });
   //
   // describe('GET /api/v1/houses/:houseId/bills', () => {
   //

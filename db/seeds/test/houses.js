@@ -316,7 +316,7 @@ exports.seed = function(knex, Promise) {
               }
             ]);
           })
-          .then(() => console.log('Dev Seeding Complete!'))
+          .then(() => console.log('Test Seeding Complete!'))
           .catch(error => console.log({ error }))
       ]);//closes Promise.all//
     })
