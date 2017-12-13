@@ -340,6 +340,28 @@ app.patch('/api/v1/houses/:houseId/chores/:id', (request, response) => {
     });
 });
 
+app.patch('/api/v1/houses/:houseId/bulletins/:id', (request, response) => {
+  const { id } = request.params;
+  const updatedBulletin = request.body;
+
+  if (updatedBulletin.id) {
+    return response.status(422).json({
+      error: 'You cannot change a bulletin id.'
+    });
+  }
+
+  database('bulletins').where('id', id).update(updatedBulletin, '*')
+    .then(results => {
+      if (!results.length) {
+        return response.status(404).json({ error: `Cannot find a bulletin with the id of ${id}` });
+      }
+      return response.sendStatus(204);
+    })
+    .catch(error => {
+      response.status(500).json({ error });
+    });
+});
+
 app.delete('/api/v1/houses/:houseId/bills/:id', (request, response) => {
   database('bills').where('id', request.params.id).select()
     .then(bills => {
