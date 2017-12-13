@@ -90,13 +90,105 @@ describe('API Routes', (done) => {
   });
 
   describe('GET /api/v1/houses/:id/users', () => {
-    it('s')
+    it('should return all users for that house', () => {
+      return chai.request(server)
+        .get('/api/v1/houses/2/users')
+        .then(response => {
+          response.should.have.status(200);
+          response.should.be.json;
+          response.body.should.be.a('array');
+          response.body.length.should.equal(4);
+          response.body[0].should.have.property('name');
+          response.body[0].name.should.equal('test-Amy');
+          response.body[0].should.have.property('id');
+          response.body[0].should.have.property('houseId');
+        })
+        .catch(error => { throw error; });
+    });
+
+    it('should return 404 if no users found', () => {
+      return chai.request(server)
+        .get('/api/v1/houses/30987/users')
+        .then(response => {
+          response.should.have.status(404);
+          response.should.be.json;
+          response.body.should.be.a('object');
+          response.body.should.have.property('error');
+          response.body.error.should.equal(`No saved users for house 30987`);
+        })
+        .catch(error => { throw error; });
+    });
   });
-  //
-  // describe('GET /api/v1/houses/:houseId/bills', () => {
-  //
-  // });
-  //
+
+  describe('GET /api/v1/houses/:houseId/bills', () => {
+    it('should return all bills for a house', () => {
+      return chai.request(server)
+        .get('/api/v1/houses/4/bills')
+        .then(response => {
+          response.should.have.status(200);
+          response.should.be.json;
+          response.body.should.be.a('array');
+          response.body.length.should.equal(1);
+          response.body[0].should.have.property('id');
+          response.body[0].should.have.property('name');
+          response.body[0].name.should.equal('test-cable');
+          response.body[0].should.have.property('total');
+          response.body[0].total.should.equal('89.74');
+          response.body[0].should.have.property('dueDate');
+          response.body[0].dueDate.should.equal('12/20/17');
+          response.body[0].should.have.property('houseId');
+        })
+        .catch(error => { throw error; });
+    });
+
+    it('should return 404 if no bills found', () => {
+      return chai.request(server)
+        .get('/api/v1/houses/10098')
+        .then(response => {
+          response.should.have.status(404);
+          // response.should.be.json;
+          // response.body.should.be.a('object');
+          // response.body.should.have.property('error');
+          // response.body.error.should.equal('No saved bills for house 10098');
+        })
+        .catch(error => { throw error; });
+    });
+
+    //test happy and sad path for query params
+    it('should search bills by name', () => {
+      return chai.request(server)
+        .get('/api/v1/houses/1/bills?name=test-electricity')
+        .then(response => {
+          response.should.have.status(200);
+          response.should.be.json;
+          response.body.should.be.a('array');
+          response.body.length.should.equal(1);
+          response.body[0].should.have.property('id');
+          response.body[0].should.have.property('name');
+          response.body[0].name.should.equal('test-electricity');
+          response.body[0].should.have.property('total');
+          response.body[0].total.should.equal('101.23');
+          response.body[0].should.have.property('dueDate');
+          response.body[0].dueDate.should.equal('12/31/17');
+          response.body[0].should.have.property('houseId');
+        })
+        .catch(error => { throw error; });
+    });
+
+    it('should return 404 if no bill by that name', () => {
+      return chai.request(server)
+        .get('/api/v1/houses/1/bills?name=test-cats')
+        .then(response => {
+          response.should.have.status(404);
+          response.should.be.json;
+          response.body.should.be.a('object');
+          response.body.should.have.property('error');
+          response.body.error.should.equal(`No bills have the name test-cats.`);
+        })
+        .catch(error => { throw error; });
+    });
+  });
+
   // describe('GET /api/v1/houses/:houseId/chores', () => {
   //
   // });
