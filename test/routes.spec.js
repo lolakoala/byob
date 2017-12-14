@@ -344,8 +344,28 @@ describe('API Routes', (done) => {
         .catch(error => { throw error; });
     });
   });
-  //
-  // describe('DELETE /api/v1/houses/:houseId/bulletins/:id', () => {
-  //
-  // });
+
+  describe('DELETE /api/v1/houses/:houseId/bulletins/:id', () => {
+    it('should delete bulletin with id specified', () => {
+      return chai.request(server)
+        .del('/api/v1/houses/2/bulletins/2')
+        .then(response => {
+          response.should.have.status(204);
+        })
+        .catch(error => { throw error; });
+    });
+
+    it('should return 422 if no bulletin found', () => {
+      return chai.request(server)
+        .del('/api/v1/houses/2/bulletins/9898')
+        .then(response => {
+          response.should.have.status(422);
+          response.should.be.json;
+          response.body.should.be.a('object');
+          response.body.should.have.property('error');
+          response.body.error.should.equal(`Could not find a bulletin with an id of 9898.`);
+        })
+        .catch(error => { throw error; });
+    });
+  });
 });
