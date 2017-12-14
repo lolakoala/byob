@@ -115,7 +115,7 @@ app.get('/api/v1/houses/:houseId/bulletins', (request, response) => {
       if (bulletins.length) {
         return response.status(200).json(bulletins);
       } else {
-        return response.status(404).json({ error: `No saved chores for house ${request.params.houseId}`});
+        return response.status(404).json({ error: `No saved bulletins for house ${request.params.houseId}`});
       }
     })
     .catch(error => {
@@ -391,11 +391,14 @@ app.delete('/api/v1/houses/:houseId/bills/:id', (request, response) => {
     .then(bills => {
       if (!bills.length) {
         return response.status(422).json({
-          error: `Could not find a bill with an id of ${id}.`
+          error: `Could not find a bill with an id of ${request.params.id}.`
         });
       }
-      databse('bills').where('id', request.params.id).del()
+      database('bills').where('id', request.params.id).del()
         .then(() => {
+          return response.sendStatus(204);
+        })
+        .catch(error => {
           return response.status(500).json({ error });
         });
     });
@@ -406,11 +409,14 @@ app.delete('/api/v1/houses/:houseId/chores/:id', (request, response) => {
     .then(chores => {
       if (!chores.length) {
         return response.status(422).json({
-          error: `Could not find a bill with an id of ${id}.`
+          error: `Could not find a chore with an id of ${request.params.id}.`
         });
       }
-      databse('chores').where('id', request.params.id).del()
+      database('chores').where('id', request.params.id).del()
         .then(() => {
+          return response.sendStatus(204);
+        })
+        .catch(error => {
           return response.status(500).json({ error });
         });
     });
@@ -422,11 +428,14 @@ app.delete('/api/v1/houses/:id/bulletins/:id', (request, response) => {
     .then(bulletins => {
       if (!bulletins.length) {
         return response.status(422).json({
-          error: `Could not find a bill with an id of ${id}.`
+          error: `Could not find a bulletin with an id of ${id}.`
         });
       }
-      databse('bulletins').where('id', id).del()
+      database('bulletins').where('id', id).del()
         .then(() => {
+          return response.sendStatus(204);
+        })
+        .catch(error => {
           return response.status(500).json({ error });
         });
     });
