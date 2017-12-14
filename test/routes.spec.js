@@ -258,7 +258,7 @@ describe('API Routes', (done) => {
     });
   });
   
-  describe.only('POST /api/v1/houses/:houseId/bulletins', () => {
+  describe('POST /api/v1/houses/:houseId/bulletins', () => {
 
     it('should be able to add a bulletin to the database', () => {
       return chai.request(server)
