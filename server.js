@@ -39,7 +39,7 @@ const checkAuth = (request, response, next) => {
       error: 'You must be authorized to hit this endpoint.'
     });
   }
-  jwt.verify(request.body.token, app.get('secretKey'), (error, decoded, next) => {
+  jwt.verify(request.body.token, app.get('secretKey'), (error, decoded) => {
     if (error) {
       return response.status(403).json({
         error: 'Invalid token.'
