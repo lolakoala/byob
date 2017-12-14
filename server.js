@@ -126,7 +126,7 @@ app.get('/api/v1/houses/:houseId/bulletins', (request, response) => {
 app.post('/api/v1/houses', (request, response) => {
   const house = request.body;
 
-  checkParams(['name', 'secretKey'], house, response);
+  let approved = checkParams(['name', 'secretKey'], house, response);
 
   database('houses').where('secretKey', house.secretKey).select()
     .then(houses => {

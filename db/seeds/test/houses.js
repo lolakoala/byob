@@ -1,22 +1,21 @@
-
-exports.seed = function(knex, Promise) {
+exports.seed = function (knex, Promise) {
   // Deletes ALL existing entries
   return knex('bulletins').del()
-    .then( () => knex('chores').del() )
-    .then( () => knex('bills').del() )
-    .then( () => knex('users').del() )
-    .then( () => knex('houses').del() )
-    .then( () => {
+    .then(() => knex('chores').del())
+    .then(() => knex('bills').del())
+    .then(() => knex('users').del())
+    .then(() => knex('houses').del())
+    .then(() => {
       return Promise.all([
         knex('houses').insert([
-          { id: 1, name: 'test-DogHouse', secretKey: 'oiuhasrfou'},
-          { id: 2, name: 'test-CatHouse', secretKey: '234tewrf'},
-          { id: 3, name: 'test-BirdHouse', secretKey: '098ht4t'},
-          { id: 4, name: 'test-BugHouse', secretKey: '09q58ugronfs'},
-          { id: 5, name: 'test-MouseHouse', secretKey: '0483utrfjenfv'},
-          { id: 6, name: 'test-SnakeHouse', secretKey: '34518234j'},
-          { id: 7, name: 'test-FrogHouse', secretKey: 'oiajfoiuw'},
-          { id: 8, name: 'test-SheepHouse', secretKey: '08935jneg'}
+          { id: 1, name: 'test-DogHouse', secretKey: 'oiuhasrfou' },
+          { id: 2, name: 'test-CatHouse', secretKey: '234tewrf' },
+          { id: 3, name: 'test-BirdHouse', secretKey: '098ht4t' },
+          { id: 4, name: 'test-BugHouse', secretKey: '09q58ugronfs' },
+          { id: 5, name: 'test-MouseHouse', secretKey: '0483utrfjenfv' },
+          { id: 6, name: 'test-SnakeHouse', secretKey: '34518234j' },
+          { id: 7, name: 'test-FrogHouse', secretKey: 'oiajfoiuw' },
+          { id: 8, name: 'test-SheepHouse', secretKey: '08935jneg' }
         ])
           .then(() => {
             return knex('users').insert([
