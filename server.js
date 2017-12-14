@@ -17,12 +17,37 @@ const requireHTTPS = (request, response, next) => {
 if (process.env.NODE_ENV === 'production') { app.use(requireHTTPS); }
 
 app.set('port', process.env.PORT || 3000);
+app.set('secretKey', process.env.SECRET_KEY);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
 app.use(express.static(__dirname + '/public'));
+
+const checkAuth = (request, response, next) => {
+  const token = request.body.token ||
+    request.param('token') ||
+    request.headers['authorization'];
+
+  if (request.method === 'GET') {
+    return next();
+  }
+  if (!request.body.token) {
+    return response.status(403).json({
+      error: 'You must be authorized to hit this endpoint.'
+    });
+  }
+  jwt.verify(request.body.token, app.get('secretKey'), (error, decoded) => {
+    if (error) {
+      return response.status(403).json({
+        error: 'Invalid token.'
+      });
+    }
+  });
+};
+
+app.use('/api/v1', (request, response, next) => checkAuth(request, response, next));
 
 app.get('/api/v1/houses', (request, response) => {
   database('houses').select()
