@@ -119,180 +119,210 @@ exports.seed = function(knex, Promise) {
           .then(() => {
             return knex('chores').insert([
               {
+                id: 1,
                 name: 'test-sweep the front deck',
                 details: 'test-get this done today!',
                 userId: 1,
                 houseId: 1
               },
               {
+                id: 2,
                 name: 'test-sweep the back deck',
                 details: 'test-get this done tomorrow!',
                 userId: 2,
                 houseId: 2
               },
               {
+                id: 3,
                 name: 'test-sweep the stairs',
                 details: 'test-get this done now!',
                 userId: 3,
                 houseId: 3
               },
               {
+                id: 4,
                 name: 'test-take out the front trash',
                 details: 'test-it smells horrible!',
                 userId: 4,
                 houseId: 4
               },
               {
+                id: 5,
                 name: 'test-take out the back trash',
                 details: 'test-it smells horrible!',
                 userId: 5,
                 houseId: 5
               },
               {
+                id: 6,
                 name: 'test-take out the kitchen trash',
                 details: 'test-it is full!',
                 userId: 6,
                 houseId: 6
               },
               {
+                id: 7,
                 name: 'test-take out the bathroom trash',
                 details: 'test-it is full!',
                 userId: 7,
                 houseId: 7
               },
               {
+                id: 8,
                 name: 'test-take out the bedroom trash',
                 details: 'test-it is full!',
                 userId: 8,
                 houseId: 8
               },
               {
+                id: 9,
                 name: 'test-clean the entryway',
                 details: 'test-it is a mess!',
                 userId: 9,
                 houseId: 1
               },
               {
+                id: 10,
                 name: 'test-clean the office',
                 details: 'test-it is a mess!',
                 userId: 10,
                 houseId: 2
               },
               {
+                id: 11,
                 name: 'test-clean the front bedroom',
                 details: 'test-it is a mess!',
                 userId: 11,
                 houseId: 3
               },
               {
+                id: 12,
                 name: 'test-clean the side bedroom',
                 details: 'test-it is a mess!',
                 userId: 12,
                 houseId: 4
               },
               {
+                id: 13,
                 name: 'test-clean the back bedroom',
                 details: 'test-it is a mess!',
                 userId: 13,
                 houseId: 5
               },
               {
+                id: 14,
                 name: 'test-clean the guest bedroom',
                 details: 'test-it is a mess!',
                 userId: 14,
                 houseId: 6
               },
               {
+                id: 15,
                 name: 'test-clean the master bedroom',
                 details: 'test-it is a mess!',
                 userId: 15,
                 houseId: 7
               },
               {
+                id: 16,
                 name: 'test-lean the front bathroom',
                 details: 'test-it is a mess!',
                 userId: 16,
                 houseId: 8
               },
               {
+                id: 17,
                 name: 'test-clean the side bathroom',
                 details: 'test-it is a mess!',
                 userId: 17,
                 houseId: 1
               },
               {
+                id: 18,
                 name: 'test-clean the back bathroom',
                 details: 'test-it is a mess!',
                 userId: 18,
                 houseId: 2
               },
               {
+                id: 19,
                 name: 'test-clean the guest bathroom',
                 details: 'test-it is a mess!',
                 userId: 19,
                 houseId: 3
               },
               {
+                id: 20,
                 name: 'test-clean the master bathroom',
                 details: 'test-it is a mess!',
                 userId: 20,
                 houseId: 4
               },
               {
+                id: 21,
                 name: 'test-clean the upstairs bathroom',
                 details: 'test-it is a mess!',
                 userId: 21,
                 houseId: 5
               },
               {
+                id: 22,
                 name: 'test-clean the upstairs bedroom',
                 details: 'test-it is a mess!',
                 userId: 22,
                 houseId: 6
               },
               {
+                id: 23,
                 name: 'test-clean the gutters',
                 details: 'test-they need it!',
                 userId: 23,
                 houseId: 7
               },
               {
+                id: 24,
                 name: 'test-paint the house',
                 details: 'test-it is pretty ugly',
                 userId: 24,
                 houseId: 8
               },
               {
+                id: 25,
                 name: 'test-paint the garage',
                 details: 'test-it is pretty ugly',
                 userId: 25,
                 houseId: 1
               },
               {
+                id: 26,
                 name: 'test-paint the mailbox',
                 details: 'test-it is pretty ugly',
                 userId: 26,
                 houseId: 2
               },
               {
+                id: 27,
                 name: 'test-fix the mailbox',
                 details: 'test-before the mailman comes!',
                 userId: 27,
                 houseId: 3
               },
               {
+                id: 28,
                 name: 'test-dust the furniture',
                 details: 'test-in the living room',
                 userId: 28,
                 houseId: 4
               },
               {
+                id: 29,
                 name: 'test-dust the furniture',
                 details: 'test-in the office',
                 userId: 29,
                 houseId: 5
               },
               {
+                id: 30,
                 name: 'test-dust the furniture',
                 details: 'test-in the parlor',
                 userId: 30,

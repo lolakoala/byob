@@ -409,11 +409,14 @@ app.delete('/api/v1/houses/:houseId/chores/:id', (request, response) => {
     .then(chores => {
       if (!chores.length) {
         return response.status(422).json({
-          error: `Could not find a bill with an id of ${id}.`
+          error: `Could not find a chore with an id of ${request.params.id}.`
         });
       }
-      databse('chores').where('id', request.params.id).del()
+      database('chores').where('id', request.params.id).del()
         .then(() => {
+          return response.sendStatus(204);
+        })
+        .catch(error => {
           return response.status(500).json({ error });
         });
     });
@@ -428,7 +431,7 @@ app.delete('/api/v1/houses/:id/bulletins/:id', (request, response) => {
           error: `Could not find a bill with an id of ${id}.`
         });
       }
-      databse('bulletins').where('id', id).del()
+      database('bulletins').where('id', id).del()
         .then(() => {
           return response.status(500).json({ error });
         });
