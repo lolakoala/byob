@@ -428,11 +428,14 @@ app.delete('/api/v1/houses/:id/bulletins/:id', (request, response) => {
     .then(bulletins => {
       if (!bulletins.length) {
         return response.status(422).json({
-          error: `Could not find a bill with an id of ${id}.`
+          error: `Could not find a bulletin with an id of ${id}.`
         });
       }
       database('bulletins').where('id', id).del()
         .then(() => {
+          return response.sendStatus(204);
+        })
+        .catch(error => {
           return response.status(500).json({ error });
         });
     });
