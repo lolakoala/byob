@@ -659,14 +659,105 @@ describe('API Routes', (done) => {
     });
   });
   
-  // describe('PATCH /api/v1/houses/:houseId/chores/:id', () => {
+  describe('PATCH /api/v1/houses/:houseId/chores/:id', () => {
+    it('should be able to update a chore record', () => {
+      return chai.request(server)
+        .patch('/api/v1/houses/2/chores/2')
+        .send({
+          name: 'fixedxxx stuff',
+          details: 'fix anything ANYTHING!',
+          userId: 2,
+          houseId: 2
+        })
+        .then(response => {
+          response.should.have.status(204);
+        })
+        .catch(error => { throw error; });
+    });
+
+    it('should not be able to update a bill record if the record does not exist', () => {
+      return chai.request(server)
+        .patch('/api/v1/houses/2/chores/100')
+        .send({
+          name: 'fixedxxx stuff',
+          details: 'fix anything ANYTHING!'
+        })
+        .then(response => {
+          response.should.have.status(404);
+          response.body.should.be.a('object');
+          response.body.error.should.contain('Cannot find a chore with the id of');
+        })
+        .catch(error => { throw error; });
+    });
+
+    it('should not be able to update a chore record if the user is trying to change the id', () => {
+      return chai.request(server)
+        .patch('/api/v1/houses/1/chores/1')
+        .send({
+          name: 'fixedxxx stuff',
+          details: 'fix anything ANYTHING!',
+          userId: 2,
+          houseId: 2,
+          id: 65
+        })
+        .then(response => {
+          response.should.have.status(422);
+          response.body.should.be.a('object');
+          response.body.error.should.equal('You cannot change a chore id.');
+        })
+        .catch(error => { throw error; });
+    });
+  });
   
-  // });
+  describe('PATCH /api/v1/houses/:houseId/bulletins/:id', () => {
+    it('should be able to update a bulletin record', () => {
+      return chai.request(server)
+        .patch('/api/v1/houses/1/bulletins/1')
+        .send({
+          title: 'test-May C xzCcdsd Bulletin',
+          body: 'test-May MaycZXcxz May',
+          houseId: 1
+        })
+        .then(response => {
+          response.should.have.status(204);
+        })
+        .catch(error => { throw error; });
+    });
+
+    it('should not be able to update a bulletin record if the record does not exist', () => {
+      return chai.request(server)
+        .patch('/api/v1/houses/1/bulletins/100')
+        .send({
+          title: 'test-May C xzCcdsd Bulletin',
+          body: 'test-May MaycZXcxz May',
+          houseId: 1
+        })
+        .then(response => {
+          response.should.have.status(404);
+          response.body.should.be.a('object');
+          response.body.error.should.contain('Cannot find a bulletin with the id of');
+        })
+        .catch(error => { throw error; });
+    });
+
+    it('should not be able to update a bulletin record if the user is trying to change the id', () => {
+      return chai.request(server)
+        .patch('/api/v1/houses/1/bulletins/1')
+        .send({
+          title: 'test-May C xzCcdsd Bulletin',
+          body: 'test-May MaycZXcxz May',
+          houseId: 1,
+          id: 10
+        })
+        .then(response => {
+          response.should.have.status(422);
+          response.body.should.be.a('object');
+          response.body.error.should.equal('You cannot change a bulletin id.');
+        })
+        .catch(error => { throw error; });
+    });
+  });
   
-  // describe('PATCH /api/v1/houses/:houseId/bulletins/:id', () => {
-  //
-  // });
-  //
   describe('DELETE /api/v1/houses/:houseId/bills/:id', () => {
     it('should delete bill with id specified', () => {
       return chai.request(server)
