@@ -21,22 +21,6 @@ describe('API Routes', (done) => {
       .catch(error => { throw error; });
   });
 
-  // describe('GET /api/v1/projects', () => {
-  //   it('should return all of the projects', () => {
-  //     return chai.request(server)
-  //       .get('/api/v1/projects')
-  //       .then(response => {
-  //         response.should.have.status(200);
-  //         response.should.be.json;
-  //         response.body.should.be.a('array');
-  //         response.body.length.should.equal(3);
-  //         response.body[0].should.have.property('title');
-  //         response.body[0].title.should.equal('seasons');
-  //       })
-  //       .catch(error => { throw error; });
-  //   });
-  // });
-
   describe('GET /api/v1/houses', () => {
     it('should return all houses', () => {
       return chai.request(server)
@@ -54,30 +38,6 @@ describe('API Routes', (done) => {
         .catch(error => { throw error; });
     });
   });
-
-  // describe('GET /api/v1/users', () => {
-  //
-  // });
-  //
-  // describe('GET /api/v1/users/:id', () => {
-  //
-  // });
-  //
-  // describe('GET /api/v1/houses/:id/users', () => {
-  //
-  // });
-  //
-  // describe('GET /api/v1/houses/:houseId/bills', () => {
-  //
-  // });
-  //
-  // describe('GET /api/v1/houses/:houseId/chores', () => {
-  //
-  // });
-  //
-  // describe('GET /api/v1/houses/:houseId/bulletins', () => {
-  //
-  // });
   
   describe('POST /api/v1/houses', () => {
 
@@ -93,20 +53,72 @@ describe('API Routes', (done) => {
           response.body.should.be.a('object');
           response.body.should.have.property('id');
         })
-        .catch(error => {
-          throw error;
-        });
+        .catch(error => { throw error; });
     });
 
+    it('should not add a house to database if name info is missing', () => {
+      return chai.request(server)
+        .post('/api/v1/houses')
+        .send({ secretKey: 'blahblah'})
+        .then(response => {
+          response.should.have.status(422);
+          response.body.should.be.a('object');
+          response.body.should.have.property('error');
+          response.body.error.should.equal('You are missing the name property.');
+        })
+        .catch(error => { throw error; });
+    });
+
+    it('should not add a house to database if secretKey info is missing', () => {
+      return chai.request(server)
+        .post('/api/v1/houses')
+        .send({ name: 'blahblah' })
+        .then(response => {
+          response.should.have.status(422);
+          response.body.should.be.a('object');
+          response.body.should.have.property('error');
+          response.body.error.should.equal('You are missing the secretKey property.');
+        })
+        .catch(error => { throw error; });
+    });
   });
   
-  // describe('POST /api/v1/houses/:houseId/users', () => {
-  //
-  // });
-  //
-  // describe('POST /api/v1/houses/:houseId/bills', () => {
-  //
-  // });
+  describe('POST /api/v1/houses/:houseId/users', () => {
+    it('should be able to add a user to the databse', () => {
+      return chai.request(server)
+        .post('/api/v1/houses/1/users')
+        .send({
+          id: '99',
+          name: 'Barrack OBama',
+          houseId: 1
+        })
+        .then(response => {
+          response.should.have.status(201);
+          response.body.should.be.a('object');
+          response.body.should.have.property('id');
+          response.body.id.should.equal(99);
+        })
+        .catch(error => { throw error; });
+    });
+  });
+  
+  describe('POST /api/v1/houses/:houseId/bills', () => {
+    it('should be able to add a bill to the database', () => {
+      return chai.request(server)
+        .post('/api/v1/houses/1/bills')
+        .send({
+          name: 'fake bill',
+          total: '$1,000,000',
+          dueDate: 'never',
+          houseId: 2
+        })
+        .then(response => {
+          response.should.have.status(201);
+          response.body.should.be.a('object');
+          response.body.should.have.property('id');
+        })
+    })
+  });
   //
   // describe('POST /api/v1/houses/:houseId/chores', () => {
   //
