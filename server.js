@@ -226,89 +226,92 @@ app.post('/api/v1/houses/:houseId/users', checkAuth, (request, response) => {
 
 });
 
-app.post('/api/v1/houses/:houseId/bills', checkAuth, (request, response) => {
-  const { houseId } = request.params;
-  const bill = Object.assign({ houseId }, request.body);
+app.post('/api/v1/houses/:houseId/bills',
+  checkAuth,
+  (request, response, next) => { checkParams(['name', 'total', 'dueDate'], request.body, response, next); },
+  (request, response) => {
+    const { houseId } = request.params;
+    const bill = Object.assign({ houseId }, request.body);
 
-  checkParams(['name', 'total', 'dueDate', 'houseId'], bill, response);
+    database('houses').where('id', houseId).select()
+      .then(house => {
+        if (!house) {
+          response.status(422).json({
+            error: 'There is no house with id specified.'
+          });
+        }
+      })
+      .then(() => {
+        database('bills').insert(bill, 'id')
+          .then(bill => {
+            return response.status(201).json({ id: bill[0] });
+          })
+          .catch(error => {
+            return response.status(500).json({ error });
+          });
+      })
+      .catch(error => {
+        return response.status(500).json({ error });
+      });
+  });
 
-  database('houses').where('id', houseId).select()
-    .then(house => {
-      if (!house) {
-        response.status(422).json({
-          error: 'There is no house with id specified.'
-        });
-      }
-    })
-    .then(() => {
-      database('bills').insert(bill, 'id')
-        .then(bill => {
-          return response.status(201).json({ id: bill[0] });
-        })
-        .catch(error => {
-          return response.status(500).json({ error });
-        });
-    })
-    .catch(error => {
-      return response.status(500).json({ error });
-    });
-});
+app.post('/api/v1/houses/:houseId/chores',
+  checkAuth,
+  (request, response, next) => { checkParams(['name', 'details', 'userId'], request.body, response, next); },
+  (request, response) => {
+    const { houseId } = request.params;
+    const chore = Object.assign({ houseId }, request.body);
 
-app.post('/api/v1/houses/:houseId/chores', checkAuth, (request, response) => {
-  const { houseId } = request.params;
-  const chore = Object.assign({ houseId }, request.body);
+    database('houses').where('id', houseId).select()
+      .then(house => {
+        if (!house) {
+          response.status(422).json({
+            error: 'There is no house with id specified.'
+          });
+        }
+      })
+      .then(() => {
+        database('chores').insert(chore, 'id')
+          .then(chore => {
+            return response.status(201).json({ id: chore[0] });
+          })
+          .catch(error => {
+            return response.status(500).json({ error });
+          });
+      })
+      .catch(error => {
+        return response.status(500).json({ error });
+      });
+  });
 
-  checkParams(['name', 'details', 'userId', 'houseId'], chore, response);
+app.post('/api/v1/houses/:houseId/bulletins',
+  checkAuth,
+  (request, response, next) => { checkParams(['title', 'body'], request.body, response, next); },
+  (request, response) => {
+    const { houseId } = request.params;
+    const bulletin = Object.assign({ houseId }, request.body);
 
-  database('houses').where('id', houseId).select()
-    .then(house => {
-      if (!house) {
-        response.status(422).json({
-          error: 'There is no house with id specified.'
-        });
-      }
-    })
-    .then(() => {
-      database('chores').insert(chore, 'id')
-        .then(chore => {
-          return response.status(201).json({ id: chore[0] });
-        })
-        .catch(error => {
-          return response.status(500).json({ error });
-        });
-    })
-    .catch(error => {
-      return response.status(500).json({ error });
-    });
-});
-
-app.post('/api/v1/houses/:houseId/bulletins', checkAuth, (request, response) => {
-  const { houseId } = request.params;
-  const bulletin = Object.assign({ houseId }, request.body);
-
-  checkParams(['title', 'body', 'houseId'], bulletin, response);
-
-  database('houses').where('id', houseId).select()
-    .then(house => {
-      if (!house) {
-        response.status(422).json({
-          error: 'There is no house with id specified.'
-        });
-      }
-    })
-    .then(() => {
-      database('bulletins').insert(bulletin, 'id')
-        .then(bulletin => {
-          return response.status(201).json({ id: bulletin[0] });
-        })
-        .catch(error => {
-          return response.status(500).json({ error });
-        });
-    })
-    .catch(error => {
-      return response.status(500).json({ error });
-    });
-});
+    database('houses').where('id', houseId).select()
+      .then(house => {
+        if (!house) {
+          response.status(422).json({
+            error: 'There is no house with id specified.'
+          });
+        }
+      })
+      .then(() => {
+        database('bulletins').insert(bulletin, 'id')
+          .then(bulletin => {
+            return response.status(201).json({ id: bulletin[0] });
+          })
+          .catch(error => {
+            return response.status(500).json({ error });
+          });
+      })
+      .catch(error => {
+        return response.status(500).json({ error });
+      });
+  });
 
 app.patch('/api/v1/houses/:id', checkAuth, (request, response) => {
   const { id } = request.params;
