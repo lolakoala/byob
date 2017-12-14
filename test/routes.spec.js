@@ -264,10 +264,54 @@ describe('API Routes', (done) => {
   
   });
   
-  // describe('POST /api/v1/houses/:houseId/bulletins', () => {
-  //
-  // });
-  //
+  describe('POST /api/v1/houses/:houseId/bulletins', () => {
+
+    it('should be able to add a bulletin to the database', () => {
+      return chai.request(server)
+        .post('/api/v1/houses/1/bulletins')
+        .send({
+          title: 'fakedsfsdaf',
+          body: 'more fakeness',
+          houseId: 1
+        })
+        .then(response => {
+          response.should.have.status(201);
+          response.body.should.be.a('object');
+          response.body.should.have.property('id');
+        });
+    });
+
+    it('should not add a bulletin to the database if the title is missing', () => {
+      return chai.request(server)
+        .post('/api/v1/houses/1/chores')
+        .send({
+          body: 'more fakeness',
+          houseId: 1
+        })
+        .then(response => {
+          response.should.have.status(422);
+          response.body.should.be.a('object');
+          response.body.error.should.equal('You are missing the name property.');//why is this not title????
+        });
+    });
+
+    it('should not add a bulletin to the database if the body is missing', () => {
+      return chai.request(server)
+        .post('/api/v1/houses/1/bulletins')
+        .send({
+          title: 'fakedsfsdaf',
+          body: 'more fakeness',
+          houseId: 1
+        })
+        .then(response => {
+          response.should.have.status(422);
+          response.body.should.be.a('object');
+          response.body.error.should.equal('You are missing the body property.');
+        });
+    });
+  
+  });
+  
   // describe('PATCH /api/v1/houses/:id', () => {
   //
   // });
