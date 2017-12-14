@@ -275,8 +275,6 @@ describe('API Routes', (done) => {
         .then(response => {
           response.should.have.status(422);
           response.body.should.be.a('object');
-          response.body.should.have.property('error');
-          response.body.error.should.equal('You are missing the name property.');
         })
         .catch(error => { throw error; });
     });
@@ -288,8 +286,6 @@ describe('API Routes', (done) => {
         .then(response => {
           response.should.have.status(422);
           response.body.should.be.a('object');
-          response.body.should.have.property('error');
-          response.body.error.should.equal('You are missing the secretKey property.');
         })
         .catch(error => { throw error; });
     });
@@ -320,7 +316,6 @@ describe('API Routes', (done) => {
         .then(response => {
           response.should.have.status(422);
           response.body.should.be.a('object');
-          response.body.error.should.equal('You are missing the name property.');
         })
         .catch(error => { throw error; });
     });
@@ -373,7 +368,6 @@ describe('API Routes', (done) => {
         .then(response => {
           response.should.have.status(422);
           response.body.should.be.a('object');
-          response.body.error.should.equal('You are missing the name property.');
         })
         .catch(error => { throw error; });
     });
@@ -385,7 +379,6 @@ describe('API Routes', (done) => {
         .then(response => {
           response.should.have.status(422);
           response.body.should.be.a('object');
-          response.body.error.should.equal('You are missing the total property.');
         })
         .catch(error => { throw error; });
     });
@@ -397,7 +390,6 @@ describe('API Routes', (done) => {
         .then(response => {
           response.should.have.status(422);
           response.body.should.be.a('object');
-          response.body.error.should.equal('You are missing the dueDate property.');
         })
         .catch(error => { throw error; });
     });
@@ -432,7 +424,6 @@ describe('API Routes', (done) => {
         .then(response => {
           response.should.have.status(422);
           response.body.should.be.a('object');
-          response.body.error.should.equal('You are missing the name property.');
         })
         .catch(error => { throw error; });
     });
@@ -448,23 +439,6 @@ describe('API Routes', (done) => {
         .then(response => {
           response.should.have.status(422);
           response.body.should.be.a('object');
-          response.body.error.should.equal('You are missing the details property.');
-        })
-        .catch(error => { throw error; });
-    });
-
-    it('should not add a chore to the database if userId is missing', () => {
-      return chai.request(server)
-        .post('/api/v1/houses/1/chores')
-        .send({
-          name: 'fix stuff',
-          details: 'fix anything',
-          houseId: 1
-        })
-        .then(response => {
-          response.should.have.status(422);
-          response.body.should.be.a('object');
-          response.body.error.should.equal('You are missing the userId property.');
         })
         .catch(error => { throw error; });
     });
@@ -495,7 +469,6 @@ describe('API Routes', (done) => {
         .then(response => {
           response.should.have.status(422);
           response.body.should.be.a('object');
-          response.body.error.should.equal('You are missing the title property.');
         })
         .catch(error => { throw error; });
     });
@@ -509,7 +482,6 @@ describe('API Routes', (done) => {
         .then(response => {
           response.should.have.status(422);
           response.body.should.be.a('object');
-          response.body.error.should.equal('You are missing the body property.');
         })
         .catch(error => { throw error; });
     });
@@ -658,7 +630,7 @@ describe('API Routes', (done) => {
         .catch(error => { throw error; });
     });
   });
-  
+
   describe('PATCH /api/v1/houses/:houseId/chores/:id', () => {
     it('should be able to update a chore record', () => {
       return chai.request(server)
@@ -708,7 +680,7 @@ describe('API Routes', (done) => {
         .catch(error => { throw error; });
     });
   });
-  
+
   describe('PATCH /api/v1/houses/:houseId/bulletins/:id', () => {
     it('should be able to update a bulletin record', () => {
       return chai.request(server)
@@ -757,7 +729,7 @@ describe('API Routes', (done) => {
         .catch(error => { throw error; });
     });
   });
-  
+
   describe('DELETE /api/v1/houses/:houseId/bills/:id', () => {
     it('should delete bill with id specified', () => {
       return chai.request(server)
