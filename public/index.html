@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>BYOB</title>
+  </head>
+  <body>
+    <h1>BYOB</h1>
+    <p>Fill out the form to get your json web token.</p>
+    <input id="email" placeholder="Email address" type="email" />
+    <input id="appName" placeholder="App name" type="text" />
+    <button>Submit</button>
+    <p id="token"></p>
+
+    <script type="text/javascript">
+
+    const getToken = () => {
+      const email = document.getElementById('email').value;
+      const body = {
+        email: document.getElementById('email').value,
+        appName: document.getElementById('appName').value,
+        admin: email.includes('@turing.io') ? true : false
+      }
+      fetch('./api/v1/authentication', {
+        method: 'POST',
+        body: JSON.stringify({ body }),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => response.json())
+      .then(response => {
+        console.log(response);
+        document.getElementById('token').append(response);
+      })
+      .catch(error => { console.log(error); throw error; });
+    }
+
+    const button = document.querySelector('button');
+
+    button.addEventListener('click', getToken);
+    </script>
+  </body>
+</html>

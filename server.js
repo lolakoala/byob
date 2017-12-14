@@ -5,6 +5,8 @@ const environment = process.env.NODE_ENV || 'development';
 const configuration = require('./knexfile')[environment];
 const database = require('knex')(configuration);
 const checkParams = require('./checkParams.js');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 const requireHTTPS = (request, response, next) => {
   if (request.header('x-forwarded-proto') !== 'https') {
@@ -16,12 +18,38 @@ const requireHTTPS = (request, response, next) => {
 if (process.env.NODE_ENV === 'production') { app.use(requireHTTPS); }
 
 app.set('port', process.env.PORT || 3000);
+app.set('secretKey', process.env.SECRET_KEY);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
 app.use(express.static(__dirname + '/public'));
+
+const checkAuth = (request, response, next) => {
+  if (process.env.NODE_ENV === 'test') {
+    return next();
+  }
+  const token = request.body.token ||
+    request.param('token') ||
+    request.headers['authorization'];
+
+  if (!token) {
+    return response.status(403).json({
+      error: 'You must be authorized to hit this endpoint.'
+    });
+  }
+  if (!token.admin) {
+    return response.status(403).json('You must have admin rights to hit this endpoint.');
+  }
+  jwt.verify(request.body.token, app.get('secretKey'), (error, decoded) => {
+    if (error) {
+      return response.status(403).json({
+        error: 'Invalid token.'
+      });
+    }
+  });
+};
 
 app.get('/api/v1/houses', (request, response) => {
   database('houses').select()
@@ -123,7 +151,13 @@ app.get('/api/v1/houses/:houseId/bulletins', (request, response) => {
     });
 });
 
-app.post('/api/v1/houses', (request, response) => {
+app.post('/api/v1/authentication', (request, response) => {
+  const token = jwt.sign(request.body, app.get('secretKey'));
+
+  return response.status(201).json(token);
+});
+
+app.post('/api/v1/houses', checkAuth, (request, response) => {
   const house = request.body;
 
   let approved = checkParams(['name', 'secretKey'], house, response);
@@ -150,7 +184,7 @@ app.post('/api/v1/houses', (request, response) => {
     });
 });
 
-app.post('/api/v1/houses/:houseId/users', (request, response) => {
+app.post('/api/v1/houses/:houseId/users', checkAuth, (request, response) => {
   const { houseId } = request.params;
   const user = Object.assign({ houseId }, request.body);
 
@@ -192,7 +226,7 @@ app.post('/api/v1/houses/:houseId/users', (request, response) => {
 
 });
 
-app.post('/api/v1/houses/:houseId/bills', (request, response) => {
+app.post('/api/v1/houses/:houseId/bills', checkAuth, (request, response) => {
   const { houseId } = request.params;
   const bill = Object.assign({ houseId }, request.body);
 
@@ -220,7 +254,7 @@ app.post('/api/v1/houses/:houseId/bills', (request, response) => {
     });
 });
 
-app.post('/api/v1/houses/:houseId/chores', (request, response) => {
+app.post('/api/v1/houses/:houseId/chores', checkAuth, (request, response) => {
   const { houseId } = request.params;
   const chore = Object.assign({ houseId }, request.body);
 
@@ -248,7 +282,7 @@ app.post('/api/v1/houses/:houseId/chores', (request, response) => {
     });
 });
 
-app.post('/api/v1/houses/:houseId/bulletins', (request, response) => {
+app.post('/api/v1/houses/:houseId/bulletins', checkAuth, (request, response) => {
   const { houseId } = request.params;
   const bulletin = Object.assign({ houseId }, request.body);
 
@@ -276,7 +310,7 @@ app.post('/api/v1/houses/:houseId/bulletins', (request, response) => {
     });
 });
 
-app.patch('/api/v1/houses/:id', (request, response) => {
+app.patch('/api/v1/houses/:id', checkAuth, (request, response) => {
   const { id } = request.params;
   const updatedHouse = request.body;
 
@@ -298,7 +332,7 @@ app.patch('/api/v1/houses/:id', (request, response) => {
     });
 });
 
-app.patch('/api/v1/users/:id', (request, response) => {
+app.patch('/api/v1/users/:id', checkAuth, (request, response) => {
   const { id } = request.params;
   const updatedUser = request.body;
 
@@ -320,7 +354,7 @@ app.patch('/api/v1/users/:id', (request, response) => {
     });
 });
 
-app.patch('/api/v1/houses/:houseId/bills/:id', (request, response) => {
+app.patch('/api/v1/houses/:houseId/bills/:id', checkAuth, (request, response) => {
   const { id } = request.params;
   const updatedBill = request.body;
 
@@ -342,7 +376,7 @@ app.patch('/api/v1/houses/:houseId/bills/:id', (request, response) => {
     });
 });
 
-app.patch('/api/v1/houses/:houseId/chores/:id', (request, response) => {
+app.patch('/api/v1/houses/:houseId/chores/:id', checkAuth, (request, response) => {
   const { id } = request.params;
   const updatedChore = request.body;
 
@@ -364,7 +398,7 @@ app.patch('/api/v1/houses/:houseId/chores/:id', (request, response) => {
     });
 });
 
-app.patch('/api/v1/houses/:houseId/bulletins/:id', (request, response) => {
+app.patch('/api/v1/houses/:houseId/bulletins/:id', checkAuth, (request, response) => {
   const { id } = request.params;
   const updatedBulletin = request.body;
 
@@ -386,7 +420,7 @@ app.patch('/api/v1/houses/:houseId/bulletins/:id', (request, response) => {
     });
 });
 
-app.delete('/api/v1/houses/:houseId/bills/:id', (request, response) => {
+app.delete('/api/v1/houses/:houseId/bills/:id', checkAuth, (request, response) => {
   database('bills').where('id', request.params.id).select()
     .then(bills => {
       if (!bills.length) {
@@ -404,7 +438,7 @@ app.delete('/api/v1/houses/:houseId/bills/:id', (request, response) => {
     });
 });
 
-app.delete('/api/v1/houses/:houseId/chores/:id', (request, response) => {
+app.delete('/api/v1/houses/:houseId/chores/:id', checkAuth, (request, response) => {
   database('chores').where('id', request.params.id).select()
     .then(chores => {
       if (!chores.length) {
@@ -422,7 +456,7 @@ app.delete('/api/v1/houses/:houseId/chores/:id', (request, response) => {
     });
 });
 
-app.delete('/api/v1/houses/:id/bulletins/:id', (request, response) => {
+app.delete('/api/v1/houses/:id/bulletins/:id', checkAuth, (request, response) => {
   const { id } = request.params;
   database('bulletins').where('id', id).select()
     .then(bulletins => {
