@@ -100,6 +100,37 @@ describe('API Routes', (done) => {
         })
         .catch(error => { throw error; });
     });
+
+    it('should not add a user to the database if name info is missing', () => {
+      return chai.request(server)
+        .post('/api/v1/houses/1/users')
+        .send({ houseId: 1})
+        .then(response => {
+          response.should.have.status(422);
+          response.body.should.be.a('object');
+          response.body.error.should.equal('You are missing the name property.');
+        });
+    });
+
+    // it('should not add a user to the database if a user of the same name already exists', () => {
+    //   return chai.request(server)
+    //     .post('api/v1/houses/1/users')
+    //     .send({ name: 'test-Lola', houseId: 1 })
+    //     .then(response => {
+    //       response.should.have.status(422);
+    //     });
+    // });
+
+    // it('should responed with an error if the houseId does not exist in the database', () => {
+    //   return chai.request(server)
+    //     .post('/api/v1/houses/1/users')
+    //     .send({ houseId: 90, name: 'hank'})
+    //     .then(response => {
+    //       response.should.have.status(422);//it's responding with 500
+    //       response.body.should.be.a('object');
+    //       response.body.error.should.equal('There is no house with id specified.')
+    //     })
+    // });
   });
   
   describe('POST /api/v1/houses/:houseId/bills', () => {
@@ -116,14 +147,65 @@ describe('API Routes', (done) => {
           response.should.have.status(201);
           response.body.should.be.a('object');
           response.body.should.have.property('id');
-        })
-    })
+        });
+    });
+
+    it('should not add a bill to the database if name info is missing', () => {
+      return chai.request(server)
+        .post('/api/v1/houses/1/bills')
+        .send({ houseId: 1 })
+        .then(response => {
+          response.should.have.status(422);
+          response.body.should.be.a('object');
+          response.body.error.should.equal('You are missing the name property.');
+        });
+    });
+
+    it('should not add a bill to the database if total is missing', () => {
+      return chai.request(server)
+        .post('/api/v1/houses/1/bills')
+        .send({ houseId: 1, name: 'dog-walker', dueDate: '11/22/33'})
+        .then(response => {
+          response.should.have.status(422);
+          response.body.should.be.a('object');
+          response.body.error.should.equal('You are missing the total property.');
+        });
+    });
+
+    it('should not add a bill to the database if dueDate is missing', () => {
+      return chai.request(server)
+        .post('/api/v1/houses/1/bills')
+        .send({ houseId: 1, name: 'dog-walker', total: '$14.25' })
+        .then(response => {
+          response.should.have.status(422);
+          response.body.should.be.a('object');
+          response.body.error.should.equal('You are missing the dueDate property.');
+        });
+    });
+
   });
-  //
-  // describe('POST /api/v1/houses/:houseId/chores', () => {
-  //
-  // });
-  //
+  
+  describe('POST /api/v1/houses/:houseId/chores', () => {
+    it('should be able to add a chore to the database', () => {
+      return chai.request(server)
+        .post('/api/v1/houses/1/chores')
+        .send({
+          name: 'fix stuff',
+          details: 'fix anything',
+          userId: 2,
+          houseId: 2
+        })
+        .then(response => {
+          response.should.have.status(201);
+          response.body.should.be.a('object');
+          response.body.should.have.property('id');
+        });
+    });
+
+    
+  
+  });
+  
   // describe('POST /api/v1/houses/:houseId/bulletins', () => {
   //
   // });
