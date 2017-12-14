@@ -622,12 +622,47 @@ describe('API Routes', (done) => {
         })
         .catch(error => { throw error; });
     });
+
+    it('should not be able to update a bill record if the record does not exist', () => {
+      return chai.request(server)
+        .patch('/api/v1/houses/1/bills/100')
+        .send({
+          name: 'test-electricity',
+          total: '101,000,000.23',
+          dueDate: '12/31/17',
+          houseId: 1
+        })
+        .then(response => {
+          response.should.have.status(404);
+          response.body.should.be.a('object');
+          response.body.error.should.contain('Cannot find a bill with the id of');
+        })
+        .catch(error => { throw error; });
+    });
+
+    it('should not be able to update a bill record if the user is trying to change the id', () => {
+      return chai.request(server)
+        .patch('/api/v1/houses/1/bills/1')
+        .send({
+          name: 'test-electricity',
+          total: '101,000,000.23',
+          dueDate: '12/31/17',
+          houseId: 1,
+          id: 65
+        })
+        .then(response => {
+          response.should.have.status(422);
+          response.body.should.be.a('object');
+          response.body.error.should.equal('You cannot change a bill id.');
+        })
+        .catch(error => { throw error; });
+    });
   });
-  //
+  
   // describe('PATCH /api/v1/houses/:houseId/chores/:id', () => {
-  //
+  
   // });
-  //
+  
   // describe('PATCH /api/v1/houses/:houseId/bulletins/:id', () => {
   //
   // });
