@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>BYOB</title>
+  </head>
+  <body>
+    <h1>BYOB</h1>
+    <p>Fill out the form to get your json web token.</p>
+    <input id="email" placeholder="Email address" type="email" />
+    <input id="appName" placeholder="App name" type="text" />
+    <button>Submit</button>
+    <p id="token"></p>
+
+    <script type="text/javascript">
+    const getToken = () => {
+      fetch('/api/v1/authenticate', {
+        email: document.getElementById('email').innerText;
+        appName: document.getElementById('appName').innerText;
+      })
+    }
+
+    button.addEventListener('click', getToken)
+    </script>
+  </body>
+</html>
