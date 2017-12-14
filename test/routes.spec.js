@@ -300,7 +300,6 @@ describe('API Routes', (done) => {
         .post('/api/v1/houses/1/bulletins')
         .send({
           title: 'fakedsfsdaf',
-          body: 'more fakeness',
           houseId: 1
         })
         .then(response => {
@@ -312,18 +311,111 @@ describe('API Routes', (done) => {
   
   });
   
-  // describe('PATCH /api/v1/houses/:id', () => {
-  //
-  // });
-  //
-  // describe('PATCH /api/v1/users/:id', () => {
-  //
-  // });
-  //
-  // describe('PATCH /api/v1/houses/:houseId/bills/:id', () => {
-  //
-  // });
-  //
+  describe('PATCH /api/v1/houses/:id', () => {
+    it('should be able to update a house record', () => {
+      return chai.request(server)
+        .patch('/api/v1/houses/1')
+        .send({
+          name: 'The BIG House',
+          secretKey: 'password'
+        })
+        .then(response => {
+          response.should.have.status(204);
+        });
+    });
+
+    it('should not be able to update a house record if the user is trying to change the id', () => {
+      return chai.request(server)
+        .patch('/api/v1/houses/1')
+        .send({
+          name: 'The BIG House',
+          secretKey: 'password',
+          id: 123232
+        })
+        .then(response => {
+          response.should.have.status(422);
+          response.body.should.be.a('object');
+          response.body.error.should.equal('You cannot change a house id.');
+        });
+    });
+
+    it('return an error if the houseId does not exist', () => {
+      return chai.request(server)
+        .patch('/api/v1/houses/1353454566')
+        .send({
+          name: 'The BIG House',
+          secretKey: 'password'
+        })
+        .then(response => {
+          response.should.have.status(404);
+          response.body.should.be.a('object');
+          response.body.error.should.contain('Cannot find a house with the id of');
+        });
+    });
+ 
+  });
+  
+  describe('PATCH /api/v1/users/:id', () => {
+    it('should be able to update a user record', () => {
+      return chai.request(server)
+        .patch('/api/v1/users/1')
+        .send({
+          name: 'adfdsLola', 
+          houseId: 1
+        })
+        .then(response => {
+          response.should.have.status(204);
+        });
+    });
+
+    it('should not be able to update a user record if the user is trying to change the id', () => {
+      return chai.request(server)
+        .patch('/api/v1/users/1')
+        .send({
+          name: 'adfdsLola',
+          houseId: 1,
+          id: 1
+        })
+        .then(response => {
+          response.should.have.status(422);
+          response.body.should.be.a('object');
+          response.body.error.should.equal('You cannot change a user id.');
+        });
+    });
+
+    it('return an error if the userId does not exist', () => {
+      return chai.request(server)
+        .patch('/api/v1/users/1353454566')
+        .send({
+          name: 'adfdsLola',
+          houseId: 1
+        })
+        .then(response => {
+          response.should.have.status(404);
+          response.body.should.be.a('object');
+          response.body.error.should.contain('Cannot find a user with the id of');
+        });
+    });
+    
+  });
+  
+  describe('PATCH /api/v1/houses/:houseId/bills/:id', () => {
+    it('should be able to update a bill record', () => {
+      return chai.request(server)
+        .patch('/api/v1/houses/1/bills/1')
+        .send({
+          name: 'test-electricity',
+          total: '101,000,000.23',
+          dueDate: '12/31/17',
+          houseId: 1
+        })
+        .then(response => {
+          response.should.have.status(204);
+        });
+    });
+
+  });
+  
   // describe('PATCH /api/v1/houses/:houseId/chores/:id', () => {
   //
   // });
