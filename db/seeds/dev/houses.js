@@ -13,7 +13,7 @@ const createUser = (knex, user, house) => {
         houseId: houseRecord.id
       });
     });
-    // .then(response => console.log(response));
+  // .then(response => console.log(response));
 };
 
 exports.seed = function(knex, Promise) {
