@@ -149,6 +149,17 @@ app.get('/api/v1/houses/:houseId/bulletins', (request, response) => {
     });
 });
 
+app.post('/api/v1/authentication', (request, response) => {
+  const { email } = request.body;
+  const { appName } = request.body;
+
+  checkParams(['email', 'appName'], request.body, response);
+
+  const token = jwt.sign(request.body, app.get('secretKey'));
+
+  return response.status(201).json(token);
+});
+
 app.post('/api/v1/houses', (request, response) => {
   const house = request.body;
 
