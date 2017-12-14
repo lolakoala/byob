@@ -146,15 +146,10 @@ describe('API Routes', (done) => {
         .get('/api/v1/houses/10098')
         .then(response => {
           response.should.have.status(404);
-          // response.should.be.json;
-          // response.body.should.be.a('object');
-          // response.body.should.have.property('error');
-          // response.body.error.should.equal('No saved bills for house 10098');
         })
         .catch(error => { throw error; });
     });
 
-    //test happy and sad path for query params
     it('should search bills by name', () => {
       return chai.request(server)
         .get('/api/v1/houses/1/bills?name=test-electricity')
