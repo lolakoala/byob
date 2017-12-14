@@ -26,8 +26,6 @@ exports.up = function(knex, Promise) {
       table.increments('id').primary();
       table.string('name');
       table.string('details');
-      table.integer('userId').unsigned();
-      table.foreign('userId').references('users.id');
       table.integer('houseId').unsigned();
       table.foreign('houseId').references('houses.id');
       table.timestamps(true, true);
