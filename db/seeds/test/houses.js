@@ -61,49 +61,57 @@ exports.seed = function (knex, Promise) {
                 name: 'test-electricity',
                 total: '101.23',
                 dueDate: '12/31/17',
-                houseId: 1
+                houseId: 1,
+                id: 1
               },
               {
                 name: 'test-water',
                 total: '99.67',
                 dueDate: '12/30/17',
-                houseId: 2
+                houseId: 2,
+                id: 2
               },
               {
                 name: 'test-trash',
                 total: '99.67',
                 dueDate: '12/30/17',
-                houseId: 3
+                houseId: 3,
+                id: 3
               },
               {
                 name: 'test-cable',
                 total: '89.74',
                 dueDate: '12/20/17',
-                houseId: 4
+                houseId: 4,
+                id: 4
               },
               {
                 name: 'test-internet',
                 total: '50.03',
                 dueDate: '12/28/17',
-                houseId: 5
+                houseId: 5,
+                id: 5
               },
               {
                 name: 'test-pool',
                 total: '30.00',
                 dueDate: '12/15/17',
-                houseId: 6
+                houseId: 6,
+                id: 6
               },
               {
                 name: 'test-lawn care',
                 total: '50.00',
                 dueDate: '12/15/17',
-                houseId: 7
+                houseId: 7,
+                id: 7
               },
               {
                 name: 'test-gas',
                 total: '72.99',
                 dueDate: '12/14/17',
-                houseId: 8
+                houseId: 8,
+                id: 8
               }
             ]);
           })
@@ -296,26 +304,30 @@ exports.seed = function (knex, Promise) {
               {
                 title: 'test-May Bulletin',
                 body: 'test-May May May',
-                houseId: 1
+                houseId: 1,
+                id: 1
               },
               {
                 title: 'test-June Bulletin',
                 body: 'test-June June June',
-                houseId: 2
+                houseId: 2,
+                id: 2
               },
               {
                 title: 'test-July Bulletin',
                 body: 'test-July July July',
-                houseId: 3
+                houseId: 3,
+                id: 3
               },
               {
                 title: 'test-August Bulletin',
                 body: 'test-August August August',
-                houseId: 4
+                houseId: 4,
+                id: 4
               }
             ]);
           })
-          .then(() => console.log('Dev Seeding Complete!'))
+          .then(() => console.log('Test Seeding Complete!'))
           .catch(error => console.log({ error }))
       ]);//closes Promise.all//
     })
