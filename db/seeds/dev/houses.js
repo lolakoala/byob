@@ -4,11 +4,11 @@ const billsData = require('../../../data/bills');
 const choresData = require('../../../data/chores');
 const bulletinsData = require('../../../data/bulletins');
 
-const createItem = (knex, user, house, table) => {
+const createUser = (knex, user, house) => {
   return knex('houses').where('name', house).first()
     .then(houseRecord => {
       console.log(user, houseRecord.id);
-      return knex(table).insert({
+      return knex('users').insert({
         name: user.name,
         houseId: houseRecord.id
       });
@@ -41,6 +41,24 @@ exports.seed = function(knex, Promise) {
       });
 
       return Promise.all(billsPromises);
+    })
+    .then(() => {
+      let bulletinsPromises = [];
+      bulletinsData.forEach((bulletin) => {
+        let house = bulletin.house;
+        bulletinsPromises.push(createItem(knex, bulletin, house, 'bulletins'));
+      });
+
+      return Promise.all(bulletinsPromises);
+    })
+    .then(() => {
+      let choresPromises = [];
+      choresData.forEach((chore) => {
+        let house = chore.house;
+        choresPromises.push(createItem(knex, chore, house, 'chores'));
+      });
+
+      return Promise.all(choresPromises);
     })
     .then(() => console.log('Dev Seeding Complete!'))
     .catch(error => console.log({ error }));
