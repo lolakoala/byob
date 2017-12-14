@@ -13,14 +13,24 @@
     <p id="token"></p>
 
     <script type="text/javascript">
+
     const getToken = () => {
+      const email = document.getElementById('email').value;
       fetch('/api/v1/authenticate', {
-        email: document.getElementById('email').innerText;
-        appName: document.getElementById('appName').innerText;
+        email: document.getElementById('email').value;
+        appName: document.getElementById('appName').value;
+        admin: email.includes('@turing.io') ? true : false;
       })
+      .then(response => response.json())
+      .then(response => {
+        document.getElementById('token').append(response);
+      })
+      .catch(error => { throw error; });
     }
 
-    button.addEventListener('click', getToken)
+    const button = document.querySelector('button');
+
+    button.addEventListener('click', getToken);
     </script>
   </body>
 </html>
