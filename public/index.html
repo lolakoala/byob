@@ -16,16 +16,25 @@
 
     const getToken = () => {
       const email = document.getElementById('email').value;
-      fetch('/api/v1/authenticate', {
-        email: document.getElementById('email').value;
-        appName: document.getElementById('appName').value;
-        admin: email.includes('@turing.io') ? true : false;
+      const body = {
+        email: document.getElementById('email').value,
+        appName: document.getElementById('appName').value,
+        admin: email.includes('@turing.io') ? true : false
+      }
+      fetch('./api/v1/authentication', {
+        method: 'POST',
+        body: JSON.stringify({ body }),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
       })
       .then(response => response.json())
       .then(response => {
+        console.log(response);
         document.getElementById('token').append(response);
       })
-      .catch(error => { throw error; });
+      .catch(error => { console.log(error); throw error; });
     }
 
     const button = document.querySelector('button');
