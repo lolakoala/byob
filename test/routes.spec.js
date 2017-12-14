@@ -188,7 +188,7 @@ describe('API Routes', (done) => {
   describe('POST /api/v1/houses/:houseId/chores', () => {
     it('should be able to add a chore to the database', () => {
       return chai.request(server)
-        .post('/api/v1/houses/1/chores')
+        .post('/api/v1/houses/2/chores')
         .send({
           name: 'fix stuff',
           details: 'fix anything',
@@ -202,7 +202,65 @@ describe('API Routes', (done) => {
         });
     });
 
-    
+    it('should not add a chore to the database if name info is missing', () => {
+      return chai.request(server)
+        .post('/api/v1/houses/1/chores')
+        .send({ 
+          details: 'fix anything',
+          userId: 2,
+          houseId: 1
+        })
+        .then(response => {
+          response.should.have.status(422);
+          response.body.should.be.a('object');
+          response.body.error.should.equal('You are missing the name property.');
+        });
+    });
+
+    it('should not add a chore to the database if details info is missing', () => {
+      return chai.request(server)
+        .post('/api/v1/houses/1/chores')
+        .send({
+          name: 'fix stuff',
+          userId: 2,
+          houseId: 1
+        })
+        .then(response => {
+          response.should.have.status(422);
+          response.body.should.be.a('object');
+          response.body.error.should.equal('You are missing the details property.');
+        });
+    });
+
+    it('should not add a chore to the database if userId is missing', () => {
+      return chai.request(server)
+        .post('/api/v1/houses/1/chores')
+        .send({
+          name: 'fix stuff',
+          details: 'fix anything',
+          houseId: 1
+        })
+        .then(response => {
+          response.should.have.status(422);
+          response.body.should.be.a('object');
+          response.body.error.should.equal('You are missing the userId property.');
+        });
+    });
+
+    // it('should not add a chore to the database if houseId is missing', () => {
+    //   return chai.request(server)
+    //     .post('/api/v1/houses/1/chores')
+    //     .send({
+    //       name: 'fix stuff',
+    //       details: 'fix anything',
+    //       userId: 2
+    //     })
+    //     .then(response => {
+    //       response.should.have.status(422);
+    //       response.body.should.be.a('object');
+    //       response.body.error.should.equal('You are missing the houseId property.');
+    //     });
+    // });
   
   });
   
