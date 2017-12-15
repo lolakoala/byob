@@ -635,7 +635,6 @@ describe('API Routes', (done) => {
         .send({
           name: 'fixedxxx stuff',
           details: 'fix anything ANYTHING!',
-          userId: 2,
           houseId: 2
         })
         .then(response => {
