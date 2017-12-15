@@ -350,7 +350,7 @@ describe('API Routes', (done) => {
           id: '99',
           name: 'fake bill',
           total: '$1,000,000',
-          dueDate: 'never',
+          dueDate: 'never'
         })
         .then(response => {
           response.should.have.status(201);
@@ -401,7 +401,7 @@ describe('API Routes', (done) => {
         .send({
           id: '99',
           name: 'fix stuff',
-          details: 'fix anything',
+          details: 'fix anything'
         })
         .then(response => {
           response.should.have.status(201);
