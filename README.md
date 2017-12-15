@@ -593,7 +593,6 @@ fetch('./api/v1/houses/:houseId/chores/:id', {
   method: 'PATCH',
   body: JSON.stringify({
     name: 'sweep',
-    details: 'the kitchen',
     token: 'yourTokenHere'
     }),
   headers: {
