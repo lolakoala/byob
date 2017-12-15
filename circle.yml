@@ -14,5 +14,5 @@ test:
 deployment:
   production:
     branch: master
-    heroku:
-      appname: lb-nb-byob
+    # heroku:
+    #   appname: lb-nb-byob
