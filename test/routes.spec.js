@@ -198,7 +198,6 @@ describe('API Routes', (done) => {
           response.body[0].name.should.equal('test-sweep the front deck');
           response.body[0].should.have.property('details');
           response.body[0].details.should.equal('test-get this done today!');
-          response.body[0].should.have.property('userId');
           response.body[0].should.have.property('houseId');
         })
         .catch(error => { throw error; });
@@ -402,7 +401,6 @@ describe('API Routes', (done) => {
         .send({
           name: 'fix stuff',
           details: 'fix anything',
-          userId: 2,
           houseId: 2
         })
         .then(response => {
@@ -418,7 +416,6 @@ describe('API Routes', (done) => {
         .post('/api/v1/houses/1/chores')
         .send({
           details: 'fix anything',
-          userId: 2,
           houseId: 1
         })
         .then(response => {
@@ -433,7 +430,6 @@ describe('API Routes', (done) => {
         .post('/api/v1/houses/1/chores')
         .send({
           name: 'fix stuff',
-          userId: 2,
           houseId: 1
         })
         .then(response => {

@@ -263,7 +263,7 @@ app.post('/api/v1/houses/:houseId/bills',
 
 app.post('/api/v1/houses/:houseId/chores',
   checkAuth,
-  (request, response, next) => { checkParams(['name', 'details', 'userId'], request.body, response, next); },
+  (request, response, next) => { checkParams(['name', 'details'], request.body, response, next); },
   (request, response) => {
     const { houseId } = request.params;
     const chore = Object.assign({ houseId }, request.body);
