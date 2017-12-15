@@ -395,7 +395,7 @@ app.patch('/api/v1/houses/:houseId/bills/:id', checkAuth, (request, response) =>
   const { id } = request.params;
   const updatedBill = request.body;
 
-  delete updateBill.token;
+  delete updatedBill.token;
 
   if (updatedBill.id) {
     return response.status(422).json({
