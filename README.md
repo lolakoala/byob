@@ -1,13 +1,39 @@
 # BYOB-Build Your Own Backend
 
-//*****INTRO THE PROJECT!*****//
-
-//*****INTRO THE PROJECT!*****//
-
-//*****INTRO THE PROJECT!*****//
+This API provides access to sample data for the TRIBE app.
+Tribe is an communal living management app intended for a group of housemates to keep track of bulletins, bills, and chores.
 
 
 ## Endpoints
+
+### POST Authentication
+
+```
+POST Authentication
+```
+
+#### Description:
+
+- Issues the user a JWT according to the authorization level.
+- User will need to submit email and application name in order to be issued a JWT.
+- Only users with a valid email ending in @turing.io will be granted "Admin" privileges to be able to POST, PUT, PATCH, DELETE.
+- At the root page of the application, there is a form you can submit for a JWT.
+
+#### Example
+
+```
+fetch('/api/v1/houses', {
+  method: 'POST',
+  body: JSON.stringify({
+    appName: 'Lola',
+    email: 'lola@turing.io',
+    admin: true
+    }),
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  });
+```
 
 ### GET Houses
 
@@ -15,17 +41,17 @@
 Get Houses
 ```
 
-#### Descrition
+#### Description
 
-- returns an array of all House records.
+- Returns an array of all House records.
 
 #### Example
 
 ```
-'/api/v1/houses'
+fetch('./api/v1/houses');
 ```
 
-#### returns: 
+#### returns:
 
 ```
 [
@@ -66,24 +92,24 @@ GET users
 #### Example
 
 ```
-'/api/v1/users'
+fetch('./api/v1/users')
 ```
 
-#### returns: 
+#### returns:
 
 ```
   [
     {
-      "name": "Lola", 
-      "houseId": "1" 
+      "name": "Lola",
+      "houseId": "1"
     },
-    { 
-      "name": "Nik", 
-      "houseId": "1" 
+    {
+      "name": "Nik",
+      "houseId": "1"
     },
-    { 
-      "name": "Rufus", 
-      "houseId": "1" 
+    {
+      "name": "Rufus",
+      "houseId": "1"
     }
   ]
 ```
@@ -96,20 +122,20 @@ GET users:id
 
 #### Descrition
 
-- returns a specific user.
+- Returns a specific user.
 
 #### Example
 
 ```
-'/api/v1/users/:id'
+fetch('./api/v1/users/:id')
 ```
 
-#### returns: 
+#### returns:
 
 ```
-{ 
-  name: 'Lola', 
-  houseId: 1 
+{
+  name: 'Lola',
+  houseId: 1
 }
 ```
 ### GET users by houseId
@@ -118,35 +144,35 @@ GET users:id
 GET users:houseId
 ```
 
-#### Descrition
+#### Description
 
-- returns an array of users belonging to a specific house.
+- Returns an array of users belonging to a specific house.
 
 #### Example
 
 ```
-'/api/v1/houses/:id/users'
+fetch('./api/v1/houses/:id/users')
 ```
 
-#### returns: 
+#### returns:
 
 ```
 [
-  { 
+  {
     "name": "Lola",
-    "houseId": "1" 
+    "houseId": "1"
   },
-  { 
-    "name": "Nik", "houseId": "1" 
+  {
+    "name": "Nik", "houseId": "1"
   },
-  { 
+  {
     "name": "Rufus", "houseId": "1"
   },
-  { 
+  {
     "name": "Adam",
-    "houseId": "1" 
+    "houseId": "1"
   },
-  { 
+  {
     "name": "Alex",
     "houseId": "1"
   }
@@ -159,17 +185,17 @@ GET users:houseId
 GET bills:houseId
 ```
 
-#### Descrition
+#### Description
 
 - Returns an array of all bills records for a specific house.
 
 #### Example
 
 ```
-'/api/v1/houses/:houseId/bills'
+fetch('./api/v1/houses/:houseId/bills')
 ```
 
-#### returns: 
+#### returns:
 
 ```
 [
@@ -200,17 +226,17 @@ GET bills:houseId
 GET chores:houseId
 ```
 
-#### Descrition
+#### Description
 
 - Returns an array of all chores records for a specific house.
 
 #### Example
 
 ```
-'/api/v1/houses/:houseId/chores'
+fetch('./api/v1/houses/:houseId/chores')
 ```
 
-#### returns: 
+#### returns:
 
 ```
 [
@@ -241,17 +267,17 @@ GET chores:houseId
 Get bills:houseId
 ```
 
-#### Descrition
+#### Description
 
-- returns an array of buelletins records for a specific house.
+- Returns an array of bulletins records for a specific house.
 
 #### Example
 
 ```
-'/api/v1/houses/:houseId/bulletins'
+fetch('./api/v1/houses/:houseId/bulletins')
 ```
 
-#### returns: 
+#### returns:
 
 ```
 [
@@ -273,17 +299,29 @@ Get bills:houseId
 POST houses
 ```
 
-#### Descrition
+#### Description
 
-- adds a house record to the houses table in the database.
+- Adds a house record to the houses table in the database.
+- You must include your token in the body, as well as a name and secretKey property.
 
 #### Example
 
 ```
-'/api/v1/houses'
+fetch('./api/v1/houses', {
+  method: 'POST',
+  body: JSON.stringify({
+    name: 'My House',
+    secretKey: 'password'
+    token: 'yourTokenHere'
+    }),
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  }
+})
 ```
 
-#### returns: 
+#### returns:
 
 ```
 {
@@ -297,17 +335,28 @@ POST houses
 POST users
 ```
 
-#### Descrition
+#### Description
 
-- adds a new user record to the users table in the database.
+- Adds a new user record to the users table in the database.
+- You must include your token in the body, as well as a name property.
 
 #### Example
 
 ```
-'/api/v1/houses/:houseId/users'
+fetch('./api/v1/houses/:houseId/users', {
+  method: 'POST',
+  body: JSON.stringify({
+    name: 'Name',
+    token: 'yourTokenHere'
+    }),
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  }
+})
 ```
 
-#### returns: 
+#### returns:
 
 ```
 {
@@ -322,17 +371,30 @@ POST users
 POST bills
 ```
 
-#### Descrition
+#### Description
 
-- adds a bill record to the bills table in the database.
+- Adds a bill record to the bills table in the database.
+- You must include your token in the body, as well as a name, total, and dueDate property.
 
 #### Example
 
 ```
-'/api/v1/houses/:houseId/bills'
+fetch('./api/v1/houses/:houseId/bills', {
+  method: 'POST',
+  body: JSON.stringify({
+    name: 'electric',
+    total: '100',
+    dueDate: '12/12/17',
+    token: 'yourTokenHere'
+    }),
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  }
+});
 ```
 
-#### returns: 
+#### returns:
 
 ```
 {
@@ -345,17 +407,29 @@ POST bills
 POST chores
 ```
 
-#### Descrition
+#### Description
 
-- adds a chore record to the chores table in the database.
+- Adds a chore record to the chores table in the database.
+- You must include your token in the body, as well as a name, and details property.
 
 #### Example
 
 ```
-'/api/v1/houses/:houseId/chores'
+fetch('./api/v1/houses/:houseId/chores', {
+  method: 'POST',
+  body: JSON.stringify({
+    name: 'sweep',
+    details: 'the kitchen',
+    token: 'yourTokenHere'
+    }),
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  }
+});
 ```
 
-#### returns: 
+#### returns:
 
 ```
 {
@@ -370,17 +444,29 @@ POST chores
 POST bulletins
 ```
 
-#### Descrition
+#### Description
 
-- adds a new bulletin record to the bulletins table in the database.
+- Adds a new bulletin record to the bulletins table in the database.
+- You must include your token in the body, as well as a body and title property.
 
 #### Example
 
 ```
-'/api/v1/houses/:houseId/bulletins'
+fetch('./api/v1/houses/:houseId/bulletins', {
+  method: 'POST',
+  body: JSON.stringify({
+    title: 'News',
+    body: 'more news',
+    token: 'yourTokenHere'
+    }),
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  }
+});
 ```
 
-#### returns: 
+#### returns:
 
 ```
 {
@@ -394,17 +480,29 @@ POST bulletins
 PATCH houses
 ```
 
-#### Descrition
+#### Description
 
-- updates a house record on the houses table in the database.
+- Updates a house record on the houses table in the database.
+- You must include your token in the body, as well as any property you wish to change.
 
 #### Example
 
 ```
-'/api/v1/houses/:id'
+fetch('./api/v1/houses/:id', {
+  method: 'PATCH',
+  body: JSON.stringify({
+    name: 'My House',
+    secretKey: 'password'
+    token: 'yourTokenHere'
+    }),
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  }
+})
 ```
 
-#### returns: 
+#### returns:
 
 ```
 returns status 204
@@ -416,17 +514,28 @@ returns status 204
 PATCH users
 ```
 
-#### Descrition
+#### Description
 
-- updates a user record on the users table in the database.
+- Updates a user record on the users table in the database.
+- You must include your token in the body, as well as any property you wish to change.
 
 #### Example
 
 ```
-'/api/v1/users/:id'
+fetch('./api/v1/users/:id', {
+  method: 'PATCH',
+  body: JSON.stringify({
+    name: 'Name',
+    token: 'yourTokenHere'
+    }),
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  }
+})
 ```
 
-#### returns: 
+#### returns:
 
 ```
 returns status 204
@@ -437,17 +546,30 @@ returns status 204
 PATCH bills
 ```
 
-#### Descrition
+#### Description
 
-- updates a bill record on the bills table in the database.
+- Updates a bill record on the bills table in the database.
+- You must include your token in the body, as well as any property you wish to change.
 
 #### Example
 
 ```
-'/api/v1/houses/:houseId/bills/:id'
+fetch('./api/v1/houses/:houseId/bills/:id', {
+  method: 'PATCH',
+  body: JSON.stringify({
+    name: 'electric',
+    total: '100',
+    dueDate: '12/12/17',
+    token: 'yourTokenHere'
+    }),
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  }
+});
 ```
 
-#### returns: 
+#### returns:
 
 ```
 returns status 204
@@ -459,17 +581,29 @@ returns status 204
 PATCH chores
 ```
 
-#### Descrition
+#### Description
 
-- updates a chore record on the chores table in the database.
+- Updates a chore record on the chores table in the database.
+- You must include your token in the body, as well as any property you wish to change.
 
 #### Example
 
 ```
-'/api/v1/houses/:houseId/chores/:id'
+fetch('./api/v1/houses/:houseId/chores/:id', {
+  method: 'PATCH',
+  body: JSON.stringify({
+    name: 'sweep',
+    details: 'the kitchen',
+    token: 'yourTokenHere'
+    }),
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  }
+});
 ```
 
-#### returns: 
+#### returns:
 
 ```
 returns status 204
@@ -481,17 +615,29 @@ returns status 204
 PATCH bulletins
 ```
 
-#### Descrition
+#### Description
 
-- updates a bulletin record on the bulletins table in the database.
+- Updates a bulletin record on the bulletins table in the database.
+- You must include your token in the body, as well as any property you wish to change.
 
 #### Example
 
 ```
-'/api/v1/houses/:houseId/bulletins/:id'
+fetch('./api/v1/houses/:houseId/bulletins/:id', {
+  method: 'PATCH',
+  body: JSON.stringify({
+    title: 'News',
+    body: 'more news',
+    token: 'yourTokenHere'
+    }),
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  }
+});
 ```
 
-#### returns: 
+#### returns:
 
 ```
 returns status 204
@@ -503,17 +649,27 @@ returns status 204
 DELETE bills
 ```
 
-#### Descrition
+#### Description
 
-- removes a bill record from the bills table in the database.
+- Removes a bill record from the bills table in the database.
+- You must include your token in the body.
 
 #### Example
 
 ```
-'/api/v1/houses/:houseId/bills/:id'
+fetch('./api/v1/houses/:houseId/bills/:id', {
+  method: 'DELETE',
+  body: JSON.stringify({
+    token: 'yourTokenHere'
+    }),
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  }
+});
 ```
 
-#### returns: 
+#### returns:
 
 ```
 returns status 204
@@ -525,17 +681,27 @@ returns status 204
 DELTE chores
 ```
 
-#### Descrition
+#### Description
 
-- removes a chore record from the chores table in the database.
+- Removes a chore record from the chores table in the database.
+- You must include your token in the body.
 
 #### Example
 
 ```
-'/api/v1/houses/:houseId/chores/:id'
+fetch('./api/v1/houses/:houseId/chores/:id', {
+  method: 'DELETE',
+  body: JSON.stringify({
+    token: 'yourTokenHere'
+    }),
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  }
+});
 ```
 
-#### returns: 
+#### returns:
 
 ```
 returns status 204
@@ -547,20 +713,28 @@ returns status 204
 DELTE bulletins
 ```
 
-#### Descrition
+#### Description
 
-- removes a bulletin record from the bulletins table in the database.
+- Removes a bulletin record from the bulletins table in the database.
+- You must include your token in the body.
 
 #### Example
 
 ```
-'/api/v1/houses/:id/bulletins/:id'
+fetch('./api/v1/houses/:houseId/bulletins/:id', {
+  method: 'DELETE',
+  body: JSON.stringify({
+    token: 'yourTokenHere'
+    }),
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  }
+});
 ```
 
-#### returns: 
+#### returns:
 
 ```
 returns status 204
 ```
-
-
