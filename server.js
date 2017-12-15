@@ -39,7 +39,7 @@ const checkAuth = (request, response, next) => {
       error: 'You must be authorized to hit this endpoint.'
     });
   }
-  jwt.verify(request.body.token, app.get('secretKey'), (error, decoded) => {
+  jwt.verify(token, app.get('secretKey'), (error, decoded) => {
     if (error) {
       return response.status(403).json({
         error: 'Invalid token.'
@@ -156,7 +156,12 @@ app.get('/api/v1/houses/:houseId/bulletins', (request, response) => {
 });
 
 app.post('/api/v1/authentication', (request, response) => {
-  const token = jwt.sign(request.body, app.get('secretKey'));
+  const { email, appName, admin } = request.body;
+  const token = jwt.sign({
+    email: request.body.email,
+    appName: request.body.appName,
+    admin: request.body.admin
+  }, app.get('secretKey'));
 
   return response.status(201).json(token);
 });
@@ -165,7 +170,10 @@ app.post('/api/v1/houses',
   checkAuth,
   (request, response, next) => { checkParams(['name', 'secretKey'], request.body, response, next); },
   (request, response) => {
-    const house = request.body;
+    const house = {
+      name: request.body.name,
+      secretKey: request.body.secretKey
+    };
 
     database('houses').where('secretKey', house.secretKey).select()
       .then(houses => {
@@ -194,7 +202,10 @@ app.post('/api/v1/houses/:houseId/users',
   (request, response, next) => { checkParams(['name'], request.body, response, next); },
   (request, response) => {
     const { houseId } = request.params;
-    const user = Object.assign({ houseId }, request.body);
+    const user = {
+      name: request.body.name,
+      houseId
+    };
 
     database('houses').where('id', houseId).select()
       .then(house => {
@@ -237,7 +248,12 @@ app.post('/api/v1/houses/:houseId/bills',
   (request, response, next) => { checkParams(['name', 'total', 'dueDate'], request.body, response, next); },
   (request, response) => {
     const { houseId } = request.params;
-    const bill = Object.assign({ houseId }, request.body);
+    const bill = {
+      name: request.body.name,
+      total: request.body.total,
+      dueDate: request.body.dueDate,
+      houseId
+    };
 
     database('houses').where('id', houseId).select()
       .then(house => {
@@ -263,10 +279,14 @@ app.post('/api/v1/houses/:houseId/bills',
 
 app.post('/api/v1/houses/:houseId/chores',
   checkAuth,
-  (request, response, next) => { checkParams(['name', 'details', 'userId'], request.body, response, next); },
+  (request, response, next) => { checkParams(['name', 'details'], request.body, response, next); },
   (request, response) => {
     const { houseId } = request.params;
-    const chore = Object.assign({ houseId }, request.body);
+    const chore = {
+      name: request.body.name,
+      details: request.body.details,
+      houseId
+    };
 
     database('houses').where('id', houseId).select()
       .then(house => {
@@ -295,7 +315,11 @@ app.post('/api/v1/houses/:houseId/bulletins',
   (request, response, next) => { checkParams(['title', 'body'], request.body, response, next); },
   (request, response) => {
     const { houseId } = request.params;
-    const bulletin = Object.assign({ houseId }, request.body);
+    const bulletin = {
+      title: request.body.title,
+      body: request.body.body,
+      houseId
+    };
 
     database('houses').where('id', houseId).select()
       .then(house => {
@@ -323,6 +347,8 @@ app.patch('/api/v1/houses/:id', checkAuth, (request, response) => {
   const { id } = request.params;
   const updatedHouse = request.body;
 
+  delete updatedHouse.token;
+
   if (updatedHouse.id) {
     return response.status(422).json({
       error: 'You cannot change a house id.'
@@ -344,6 +370,8 @@ app.patch('/api/v1/houses/:id', checkAuth, (request, response) => {
 app.patch('/api/v1/users/:id', checkAuth, (request, response) => {
   const { id } = request.params;
   const updatedUser = request.body;
+
+  delete updatedUser.token;
 
   if (updatedUser.id) {
     return response.status(422).json({
@@ -367,6 +395,8 @@ app.patch('/api/v1/houses/:houseId/bills/:id', checkAuth, (request, response) =>
   const { id } = request.params;
   const updatedBill = request.body;
 
+  delete updateBill.token;
+
   if (updatedBill.id) {
     return response.status(422).json({
       error: 'You cannot change a bill id.'
@@ -389,6 +419,8 @@ app.patch('/api/v1/houses/:houseId/chores/:id', checkAuth, (request, response) =
   const { id } = request.params;
   const updatedChore = request.body;
 
+  delete updatedChore.token;
+
   if (updatedChore.id) {
     return response.status(422).json({
       error: 'You cannot change a chore id.'
@@ -410,6 +442,8 @@ app.patch('/api/v1/houses/:houseId/chores/:id', checkAuth, (request, response) =
 app.patch('/api/v1/houses/:houseId/bulletins/:id', checkAuth, (request, response) => {
   const { id } = request.params;
   const updatedBulletin = request.body;
+
+  delete updatedBulletin.token;
 
   if (updatedBulletin.id) {
     return response.status(422).json({

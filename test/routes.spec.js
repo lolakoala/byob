@@ -59,7 +59,7 @@ describe('API Routes', (done) => {
   });
 
   describe('GET /api/v1/users/:id', () => {
-    it('should return user id user exists', () => {
+    it('should return user id if user exists', () => {
       return chai.request(server)
         .get('/api/v1/users/23')
         .then(response => {
@@ -198,7 +198,6 @@ describe('API Routes', (done) => {
           response.body[0].name.should.equal('test-sweep the front deck');
           response.body[0].should.have.property('details');
           response.body[0].details.should.equal('test-get this done today!');
-          response.body[0].should.have.property('userId');
           response.body[0].should.have.property('houseId');
         })
         .catch(error => { throw error; });
@@ -258,7 +257,8 @@ describe('API Routes', (done) => {
         .post('/api/v1/houses')
         .send({
           name: 'The BIG House',
-          secretKey: 'password'
+          secretKey: 'password',
+          id: '99'
         })
         .then(response => {
           response.should.have.status(201);
@@ -304,7 +304,6 @@ describe('API Routes', (done) => {
           response.should.have.status(201);
           response.body.should.be.a('object');
           response.body.should.have.property('id');
-          response.body.id.should.equal(99);
         })
         .catch(error => { throw error; });
     });
@@ -348,10 +347,10 @@ describe('API Routes', (done) => {
       return chai.request(server)
         .post('/api/v1/houses/1/bills')
         .send({
+          id: '99',
           name: 'fake bill',
           total: '$1,000,000',
-          dueDate: 'never',
-          houseId: 2
+          dueDate: 'never'
         })
         .then(response => {
           response.should.have.status(201);
@@ -375,7 +374,7 @@ describe('API Routes', (done) => {
     it('should not add a bill to the database if total is missing', () => {
       return chai.request(server)
         .post('/api/v1/houses/1/bills')
-        .send({ houseId: 1, name: 'dog-walker', dueDate: '11/22/33'})
+        .send({ name: 'dog-walker', dueDate: '11/22/33'})
         .then(response => {
           response.should.have.status(422);
           response.body.should.be.a('object');
@@ -386,7 +385,7 @@ describe('API Routes', (done) => {
     it('should not add a bill to the database if dueDate is missing', () => {
       return chai.request(server)
         .post('/api/v1/houses/1/bills')
-        .send({ houseId: 1, name: 'dog-walker', total: '$14.25' })
+        .send({ name: 'dog-walker', total: '$14.25' })
         .then(response => {
           response.should.have.status(422);
           response.body.should.be.a('object');
@@ -400,10 +399,9 @@ describe('API Routes', (done) => {
       return chai.request(server)
         .post('/api/v1/houses/2/chores')
         .send({
+          id: '99',
           name: 'fix stuff',
-          details: 'fix anything',
-          userId: 2,
-          houseId: 2
+          details: 'fix anything'
         })
         .then(response => {
           response.should.have.status(201);
@@ -418,7 +416,6 @@ describe('API Routes', (done) => {
         .post('/api/v1/houses/1/chores')
         .send({
           details: 'fix anything',
-          userId: 2,
           houseId: 1
         })
         .then(response => {
@@ -433,7 +430,6 @@ describe('API Routes', (done) => {
         .post('/api/v1/houses/1/chores')
         .send({
           name: 'fix stuff',
-          userId: 2,
           houseId: 1
         })
         .then(response => {
@@ -449,6 +445,7 @@ describe('API Routes', (done) => {
       return chai.request(server)
         .post('/api/v1/houses/1/bulletins')
         .send({
+          id: '99',
           title: 'fakedsfsdaf',
           body: 'more fakeness'
         })
@@ -638,7 +635,6 @@ describe('API Routes', (done) => {
         .send({
           name: 'fixedxxx stuff',
           details: 'fix anything ANYTHING!',
-          userId: 2,
           houseId: 2
         })
         .then(response => {
