@@ -39,13 +39,17 @@ const checkAuth = (request, response, next) => {
       error: 'You must be authorized to hit this endpoint.'
     });
   }
-  if (!token.admin) {
-    return response.status(403).json('You must have admin rights to hit this endpoint.');
-  }
   jwt.verify(request.body.token, app.get('secretKey'), (error, decoded) => {
     if (error) {
       return response.status(403).json({
         error: 'Invalid token.'
+      });
+    }
+    if (decoded.body.admin) {
+      return next();
+    } else {
+      return response.status(403).json({
+        error: 'You must have admin rights to hit this endpoint.'
       });
     }
   });
@@ -157,158 +161,163 @@ app.post('/api/v1/authentication', (request, response) => {
   return response.status(201).json(token);
 });
 
-app.post('/api/v1/houses', checkAuth, (request, response) => {
-  const house = request.body;
+app.post('/api/v1/houses',
+  checkAuth,
+  (request, response, next) => { checkParams(['name', 'secretKey'], request.body, response, next); },
+  (request, response) => {
+    const house = request.body;
 
-  let approved = checkParams(['name', 'secretKey'], house, response);
+    database('houses').where('secretKey', house.secretKey).select()
+      .then(houses => {
+        if (houses.length) {
+          return response.status(422).json({
+            error: 'A house with that secret key already exists.'
+          });
+        }
+      })
+      .then(() => {
+        database('houses').insert(house, 'id')
+          .then(house => {
+            return response.status(201).json({ id: house[0] });
+          })
+          .catch(error => {
+            return response.status(500).json({ error });
+          });
+      })
+      .catch(error => {
+        return response.status(500).json({ error });
+      });
+  });
 
-  database('houses').where('secretKey', house.secretKey).select()
-    .then(houses => {
-      if (houses.length) {
-        return response.status(422).json({
-          error: 'A house with that secret key already exists.'
-        });
-      }
-    })
-    .then(() => {
-      database('houses').insert(house, 'id')
-        .then(house => {
-          return response.status(201).json({ id: house[0] });
-        })
-        .catch(error => {
-          return response.status(500).json({ error });
-        });
-    })
-    .catch(error => {
-      return response.status(500).json({ error });
-    });
-});
+app.post('/api/v1/houses/:houseId/users',
+  checkAuth,
+  (request, response, next) => { checkParams(['name'], request.body, response, next); },
+  (request, response) => {
+    const { houseId } = request.params;
+    const user = Object.assign({ houseId }, request.body);
 
-app.post('/api/v1/houses/:houseId/users', checkAuth, (request, response) => {
-  const { houseId } = request.params;
-  const user = Object.assign({ houseId }, request.body);
+    database('houses').where('id', houseId).select()
+      .then(house => {
+        if (!house) {
+          response.status(422).json({
+            error: 'There is no house with id specified.'
+          });
+        }
+      })
+      .then(
+        database('users').where('name', user.name).where('houseId', houseId).select()
+          .then(users => {
+            if (users.length) {
+              return response.status(422).json({
+                error: 'A user with that name already exists in the house specified.'
+              });
+            }
+          })
+          .then(() => {
+            database('users').insert(user, 'id')
+              .then(user => {
+                return response.status(201).json({ id: user[0] });
+              })
+              .catch(error => {
+                return response.status(500).json({ error });
+              });
+          })
+          .catch(error => {
+            return response.status(500).json({ error });
+          })
+      )
+      .catch(error => {
+        return response.status(500).json({ error });
+      });
 
-  checkParams(['name', 'houseId'], user, response);
+  });
 
-  database('houses').where('id', houseId).select()
-    .then(house => {
-      if (!house) {
-        response.status(422).json({
-          error: 'There is no house with id specified.'
-        });
-      }
-    })
-    .then(
-      database('users').where('name', user.name).where('houseId', houseId).select()
-        .then(users => {
-          if (users.length) {
-            return response.status(422).json({
-              error: 'A user with that name already exists in the house specified.'
-            });
-          }
-        })
-        .then(() => {
-          database('users').insert(user, 'id')
-            .then(user => {
-              return response.status(201).json({ id: user[0] });
-            })
-            .catch(error => {
-              return response.status(500).json({ error });
-            });
-        })
-        .catch(error => {
-          return response.status(500).json({ error });
-        })
-    )
-    .catch(error => {
-      return response.status(500).json({ error });
-    });
+app.post('/api/v1/houses/:houseId/bills',
+  checkAuth,
+  (request, response, next) => { checkParams(['name', 'total', 'dueDate'], request.body, response, next); },
+  (request, response) => {
+    const { houseId } = request.params;
+    const bill = Object.assign({ houseId }, request.body);
 
-});
+    database('houses').where('id', houseId).select()
+      .then(house => {
+        if (!house) {
+          response.status(422).json({
+            error: 'There is no house with id specified.'
+          });
+        }
+      })
+      .then(() => {
+        database('bills').insert(bill, 'id')
+          .then(bill => {
+            return response.status(201).json({ id: bill[0] });
+          })
+          .catch(error => {
+            return response.status(500).json({ error });
+          });
+      })
+      .catch(error => {
+        return response.status(500).json({ error });
+      });
+  });
 
-app.post('/api/v1/houses/:houseId/bills', checkAuth, (request, response) => {
-  const { houseId } = request.params;
-  const bill = Object.assign({ houseId }, request.body);
+app.post('/api/v1/houses/:houseId/chores',
+  checkAuth,
+  (request, response, next) => { checkParams(['name', 'details', 'userId'], request.body, response, next); },
+  (request, response) => {
+    const { houseId } = request.params;
+    const chore = Object.assign({ houseId }, request.body);
 
-  checkParams(['name', 'total', 'dueDate', 'houseId'], bill, response);
+    database('houses').where('id', houseId).select()
+      .then(house => {
+        if (!house) {
+          response.status(422).json({
+            error: 'There is no house with id specified.'
+          });
+        }
+      })
+      .then(() => {
+        database('chores').insert(chore, 'id')
+          .then(chore => {
+            return response.status(201).json({ id: chore[0] });
+          })
+          .catch(error => {
+            return response.status(500).json({ error });
+          });
+      })
+      .catch(error => {
+        return response.status(500).json({ error });
+      });
+  });
 
-  database('houses').where('id', houseId).select()
-    .then(house => {
-      if (!house) {
-        response.status(422).json({
-          error: 'There is no house with id specified.'
-        });
-      }
-    })
-    .then(() => {
-      database('bills').insert(bill, 'id')
-        .then(bill => {
-          return response.status(201).json({ id: bill[0] });
-        })
-        .catch(error => {
-          return response.status(500).json({ error });
-        });
-    })
-    .catch(error => {
-      return response.status(500).json({ error });
-    });
-});
+app.post('/api/v1/houses/:houseId/bulletins',
+  checkAuth,
+  (request, response, next) => { checkParams(['title', 'body'], request.body, response, next); },
+  (request, response) => {
+    const { houseId } = request.params;
+    const bulletin = Object.assign({ houseId }, request.body);
 
-app.post('/api/v1/houses/:houseId/chores', checkAuth, (request, response) => {
-  const { houseId } = request.params;
-  const chore = Object.assign({ houseId }, request.body);
-
-  checkParams(['name', 'details', 'userId', 'houseId'], chore, response);
-
-  database('houses').where('id', houseId).select()
-    .then(house => {
-      if (!house) {
-        response.status(422).json({
-          error: 'There is no house with id specified.'
-        });
-      }
-    })
-    .then(() => {
-      database('chores').insert(chore, 'id')
-        .then(chore => {
-          return response.status(201).json({ id: chore[0] });
-        })
-        .catch(error => {
-          return response.status(500).json({ error });
-        });
-    })
-    .catch(error => {
-      return response.status(500).json({ error });
-    });
-});
-
-app.post('/api/v1/houses/:houseId/bulletins', checkAuth, (request, response) => {
-  const { houseId } = request.params;
-  const bulletin = Object.assign({ houseId }, request.body);
-
-  checkParams(['title', 'body', 'houseId'], bulletin, response);
-
-  database('houses').where('id', houseId).select()
-    .then(house => {
-      if (!house) {
-        response.status(422).json({
-          error: 'There is no house with id specified.'
-        });
-      }
-    })
-    .then(() => {
-      database('bulletins').insert(bulletin, 'id')
-        .then(bulletin => {
-          return response.status(201).json({ id: bulletin[0] });
-        })
-        .catch(error => {
-          return response.status(500).json({ error });
-        });
-    })
-    .catch(error => {
-      return response.status(500).json({ error });
-    });
-});
+    database('houses').where('id', houseId).select()
+      .then(house => {
+        if (!house) {
+          response.status(422).json({
+            error: 'There is no house with id specified.'
+          });
+        }
+      })
+      .then(() => {
+        database('bulletins').insert(bulletin, 'id')
+          .then(bulletin => {
+            return response.status(201).json({ id: bulletin[0] });
+          })
+          .catch(error => {
+            return response.status(500).json({ error });
+          });
+      })
+      .catch(error => {
+        return response.status(500).json({ error });
+      });
+  });
 
 app.patch('/api/v1/houses/:id', checkAuth, (request, response) => {
   const { id } = request.params;

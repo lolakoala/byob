@@ -16,10 +16,12 @@
 
     const getToken = () => {
       const email = document.getElementById('email').value;
+      const admin = email.includes('@turing.io') ? true : false;
+      console.log(admin)
       const body = {
         email: document.getElementById('email').value,
         appName: document.getElementById('appName').value,
-        admin: email.includes('@turing.io') ? true : false
+        admin
       }
       fetch('./api/v1/authentication', {
         method: 'POST',
