@@ -7,13 +7,45 @@ const bulletinsData = require('../../../data/bulletins');
 const createUser = (knex, user, house) => {
   return knex('houses').where('name', house).first()
     .then(houseRecord => {
-      console.log(user, houseRecord.id);
       return knex('users').insert({
         name: user.name,
         houseId: houseRecord.id
       });
     });
-  // .then(response => console.log(response));
+};
+
+const createBill = (knex, bill, house) => {
+  return knex('houses').where('name', house).first()
+    .then(houseRecord => {
+      return knex('bills').insert({
+        name: bill.name,
+        total: bill.total,
+        dueDate: bill.dueDate,
+        houseId: houseRecord.id
+      });
+    });
+};
+
+const createBulletin = (knex, bulletin, house) => {
+  return knex('houses').where('name', house).first()
+    .then(houseRecord => {
+      return knex('bulletins').insert({
+        title: bulletin.title,
+        body: bulletin.body,
+        houseId: houseRecord.id
+      });
+    });
+};
+
+const createChore = (knex, chore, house) => {
+  return knex('houses').where('name', house).first()
+    .then(houseRecord => {
+      return knex('chores').insert({
+        name: chore.name,
+        details: chore.details,
+        houseId: houseRecord.id
+      });
+    });
 };
 
 exports.seed = function(knex, Promise) {
@@ -34,10 +66,33 @@ exports.seed = function(knex, Promise) {
 
       return Promise.all(usersPromises);
     })
-    .then()
+    .then(() => {
+      let billsPromises = [];
+      billsData.forEach((bill) => {
+        let house = bill.house;
+        billsPromises.push(createBill(knex, bill, house));
+      });
+
+      return Promise.all(billsPromises);
+    })
+    .then(() => {
+      let bulletinsPromises = [];
+      bulletinsData.forEach((bulletin) => {
+        let house = bulletin.house;
+        bulletinsPromises.push(createBulletin(knex, bulletin, house));
+      });
+
+      return Promise.all(bulletinsPromises);
+    })
+    .then(() => {
+      let choresPromises = [];
+      choresData.forEach((chore) => {
+        let house = chore.house;
+        choresPromises.push(createChore(knex, chore, house));
+      });
+
+      return Promise.all(choresPromises);
+    })
     .then(() => console.log('Dev Seeding Complete!'))
     .catch(error => console.log({ error }));
-  // ]);//closes Promise.all//
 };
-//     .catch(error => console.log({ error }));
-// };
