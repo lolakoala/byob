@@ -1,0 +1,81 @@
+html {
+  background-color: #159def;
+  /* background-color: #d2d6fa; */
+  text-align: center;
+  padding-top: 40px;
+  font-family: 'Open Sans', sans-serif;
+  box-sizing: border-box;
+  
+}
+
+button {
+  height: 46px;
+  margin: 0 auto;
+  padding: 10px 12px;
+  display: block;
+  width: 200px;
+  margin-top: 20px;
+  border: none;
+  font-size: 16px;
+  background-color: #159def;
+  /* background-color: #207be4; */
+  color : rgb(226, 226, 226);
+  box-shadow: 0px 0px 40px;
+  font-weight: 600;
+}
+
+button:hover {
+  background-color: rgb(226, 226, 226);
+  /* background-color: #159def; */
+  color: #159def;
+  box-shadow: rgb(226, 226, 226) 0px 0px 40px;
+}
+
+input {
+  height: 40px;
+  margin: 0;
+  padding: 0 10px;
+  width: 200px;
+  border: none;
+  font-size: 18px;
+  background-color: rgb(226, 226, 226);  
+  color: #159def;
+}
+
+body {
+  /* background-color: #2b2e55; */
+  background-color: #159def;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  overflow: hidden;
+  box-shadow: 0px 0px 80px;
+  color : rgb(226, 226, 226);
+  
+}
+
+h1 {
+  margin: 0;
+  font-family: 'Oswald', sans-serif;
+  font-size: 50px;
+  color:  rgb(226, 226, 226);
+}
+
+h5 {
+  margin: -10px;
+  color : rgb(226, 226, 226);
+  
+}
+
+#token {
+  padding: 40px;
+  overflow-wrap: break-word;
+  width: 68%;
+  margin: 0 auto;
+  min-height: 80px;
+  background-color: rgb(226, 226, 226);
+  margin-top: 20px;
+  color: #159def;
+}
+
+
